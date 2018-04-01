@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="By Guy Duer, Sha Ni &amp; Deon Provost" />
+
+<meta name="date" content="2018-03-26" />
+
+<title>Automobile Collision Prediction in Louisville, KY</title>
+
+<script src="markdown_files/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="markdown_files/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="markdown_files/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="markdown_files/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="markdown_files/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="markdown_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="markdown_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="markdown_files/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="markdown_files/navigation-1.1/tabsets.js"></script>
+<link href="markdown_files/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="markdown_files/highlightjs-9.12.0/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Automobile Collision Prediction in Louisville, KY</h1>
+<h4 class="author"><em>By Guy Duer, Sha Ni &amp; Deon Provost</em></h4>
+<h4 class="date"><em>March 26, 2018</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>1 Introduction</h1>
+<p>Across the United States, many cities have committed to reducing the number of automobile collisions on their streets. Unfortunately, finding the strategies by which these collisions may be prevented is a challenge that many cities struggle to overcome. While a great deal of academic attention has been devoted to explaining the nature and causes of varying types of automobile collisions, predictive modeling offers a different approach. Our aim is to provide insight into the degree by which built-environment characteristics, and their interaction in space, can be used as predictors of collision-risk. Thereby, arming transportation professionals and policy-makers with a new tool for informing and targeting their built-environment interventions.</p>
+<pre class="r"><code>Crashes &lt;- st_read(&quot;Crashes.shp&quot;)
+LouisvilleBoundary &lt;- st_read(&quot;LouisvilleBoundary.shp&quot;)
+
+#Setup map theme
+mapTheme &lt;- function(base_size = 12) {
+  theme(
+    text = element_text( color = &quot;black&quot;),
+    plot.title = element_text(size = 14,colour = &quot;black&quot;),
+    plot.subtitle=element_text(face=&quot;italic&quot;),
+    plot.caption=element_text(hjust=0),
+    axis.ticks = element_blank(),
+    panel.background = element_blank(),axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.border = element_rect(colour = &quot;black&quot;, fill=NA, size=1)
+  )
+}</code></pre>
+<pre class="r"><code>baseMap1 &lt;- get_googlemap(&quot;Poplar Hills, KY&quot;, 
+                   source = &quot;stamen&quot;, 
+                   zoom = 10, 
+                   maptype= &#39;roadmap&#39;,
+                   color = &#39;bw&#39;,
+                   size = c(600, 400))
+
+library(maptools)
+LouisvilleBoundary &lt;- readShapeSpatial(&quot;LouisvilleBoundary.shp&quot;)
+LouisvilleBoundary &lt;- fortify(LouisvilleBoundary)
+
+ggmap(baseMap1) + geom_polygon(data=LouisvilleBoundary, aes(x = long, y = lat, group = group), fill=&#39;white&#39;, colour=&#39;black&#39;, size=0.2, alpha = 0.5) + geom_point(data = Crashes, aes(x=GPS_LONGIT, y=GPS_LATITU, fill = &#39;Crash \nLocations&#39;), color= &#39;red&#39;, size = 0.1) + theme(legend.title=element_blank(), legend.position = c(0.89, 0.95), legend.background = element_rect(color = &quot;black&quot;, fill = &quot;grey90&quot;, size = 0.2, linetype = &quot;solid&quot;)) + labs(title=&quot;2017 Crash Locations&quot;, subtitle = &quot;Louisville, KY&quot;) + mapTheme()</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+<div id="abstract" class="section level2">
+<h2>1.1 Abstract</h2>
+<p>Our study focuses on Louisville, Kentucky. In Louisville, traffic collisions are of the utmost concern. From 2013-2016, collisions in Louisville increased by 37.5% in aggregate. Compared with the rest of the United States, <a href="http://www.kentuckystatepolice.org/pdf/KY_Traffic_Collision_Facts_2016.pdf">Louisville experienced 34% more traffic-related deaths than the national average.</a></p>
+<p>In its annual “Traffic Collision Facts” report, the Kentucky State Police describes the spatial distribution of collisions within the city, and the road types which seem to suffer the most collisions-</p>
+<p><a href="https://louisvilleky.gov/sites/default/files/bike_louisville/2014_pdfs/louisville_bsap.pdf">“Crashes occur in all areas of Louisville, although there is a clear concentration along major arterials with high volumes of motor vehicles.”</a></p>
+<p>The images below show two areas in the city that have exhibited some of the highest concentrations of accidents in 2017, according to the Kentucky State Police.</p>
+<pre class="r"><code>library(ggmap)
+baseMap2 &lt;- get_map(location = &quot;Bardstown Rd and Grinstead Drive, Louisville, KY&quot;, 
+                   source = &quot;google&quot;, 
+                   zoom = 17, 
+                   maptype= &#39;hybrid&#39;,
+                   color = &#39;bw&#39;)
+
+baseMap3 &lt;- get_map(location = &quot;Downtown Louisville, KY&quot;, 
+                    source = &quot;google&quot;, 
+                    zoom = 17, 
+                    maptype= &#39;hybrid&#39;,
+                    color = &#39;bw&#39;)
+
+ggmap(baseMap2) + geom_point(data = Crashes, aes(x=GPS_LONGIT, y=GPS_LATITU), color= &#39;red&#39;, size = 1) + mapTheme()
+ggmap(baseMap3) + geom_point(data = Crashes, aes(x=GPS_LONGIT, y=GPS_LATITU, fill = &quot;Crash \nLocations&quot;), color= &#39;red&#39;, size = 1) + mapTheme() +
+  theme(legend.title=element_blank(), legend.position = c(0.89, 0.95), legend.background = element_rect(color = &quot;black&quot;, fill = &quot;grey90&quot;, size = 0.1, linetype = &quot;solid&quot;))</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-3-1.png" width="50%" /><img src="markdown_files/figure-html/unnamed-chunk-3-2.png" width="50%" /></p>
+<p>While it is certainly reasonable and expected that roads and intersections with heavy traffic volume suffer the highest share of collisions, additional factors may play a role. Even along the same road segments (which likely have comparable traffic exposure) there is a notable variability in the risk of collision. This analysis aims to explore the reasons and factors which shape this variability in risk.</p>
+<p>We’ve partnered with the Louisville Metro Government Open Data Office to develop a tool that seeks to shed new light on this question.</p>
+</div>
+<div id="motivation" class="section level2">
+<h2>1.2 Motivation</h2>
+<p>As posited above, some aspects of collision-risk appear relatively straightforward. Most would expect that busy, high-speed roads endure a disproportionate number of automobile collisions. What is not straightforward, however, is that the segments that comprise these busy, important roads demonstrate substantial, currently unexplained, variability (see image below).</p>
+<p>It is our hypothesis that road characteristics and built environment features play a major part in influencing collision-risk. To test this hypothesis, we encode the network’s physical features, as well as Louisville’s demographic and spatial features into our dataset. This will allow us to model the differences in the road network and the degree to which these differences impact collision-risk across the city.</p>
+<p>Presently, policy officials pursue interventions based on observing the density of collisions after the fact. Our approach seeks to predict where automobile collisions are likely to occur at the segment level, providing policymakers with the means to be more proactive in their interventions and their future designs. Additionally, informed by a sense of just how much various categories and individual features contribute to collision-risk, policymakers can streamline their intervention strategies and allocate resources accordingly.</p>
+<div class="figure">
+<img src="Variability.png" alt="Variability in Collision Count." />
+<p class="caption">Variability in Collision Count.</p>
+</div>
+</div>
+<div id="methods-in-brief" class="section level2">
+<h2>1.3 Methods in brief</h2>
+<p>Our analysis began with Louisville’s road network (street-centerlines). The first step in the modeling process was to break this shapefile into segments. Each road segment will be treated as an observation in the dataset. Specifically, we broke the network into two district segment types- intersections and roads. Every additional data which we collect will be attributed to these road segments as features. These features will include physical road characteristics, demographic data, spatial data, and road usage data. The resulting prediction, therefore, will be at the segment level.</p>
+<p>The dependent variable which we will predict for each of the segments is the count of accidents per year. We used ArcGIS to spatially join the segments and crash locations from 2017, thereby attributing to each segment the number of crashes which occurred closest to that segment. Please see section 2 “Data Wrangling” for additional details.</p>
+<div class="figure">
+<img src="How_we_Count.png" alt="Counting Crashes per Segment." />
+<p class="caption">Counting Crashes per Segment.</p>
+</div>
+<p>To encode intersections within the network, we used ESRI’s network analysis tool within ArcGIS to identify nodes (i.e. intersections) within the network. Next, we estimated that the average width of roads was 50 feet and subsequently created a buffer with a radius of 35 feet around each node. We used these buffers to clip (i.e., partition) each “edge” or segment within the centerlines file, resulting in one unified network with uniquely identifiable segments and intersections.</p>
+<p>This served as the basefile to which all other data was added (see section 1.5, “Data”).</p>
+<p>Please note: as shown in the images below, this method does a very good job in approximating nodes and edges, but it is not perfect (as shown in the intersections on the left hand side of the image).</p>
+<div class="figure">
+<img src="Intersections.png" alt="Encoding Intersections." />
+<p class="caption">Encoding Intersections.</p>
+</div>
+</div>
+<div id="modeling-strategy" class="section level2">
+<h2>1.4 Modeling strategy</h2>
+<p>As described above, we will build a model which predicts the frequency of collisions events annually for each road segment in Louisville. To do this, we must digitize the features of the road network and create a set of attributes for each segment. Additionally, we must encode the structure of the network into our dataset, so we can examine how the features of each segment interact with the characteristics of the neighboring segments. This is especially important when considering the role of intersections in the network.</p>
+<p>More specifically, every intersection should know which street it touches and vice versa, allowing our model to account for connections within the road network and to features corresponding to these connections. As a result, we hope to effectively test how changes in road attributes when traveling through the network affect collision risk.</p>
+<p>Automobile collisions represent a form of “count data,” and we expect that our dependent variable will conform to distributions often associated with the nature of count data (Poisson and Negative Binomial Distributions, in particular). Additionally, we will explore normalizing the dependent variable by traffic volume and type of collision.</p>
+<p>Since the predictors we are collecting fit in district “buckets” (i.e. physical features, spatial features, use-related features, etc.) we will construct our model by examining the predictive power of each category of predictors independently. Then, in a stepwise fashion, We will test different combinations of predictors to determine which types and combinations of data are most predictive.</p>
+<p>Once a model has been chosen, we will cross-validate our model cross-sectionally (testing our predictions across subsets within a year) as well as longitudinally (year-over-year and year-part to year-part).</p>
+</div>
+</div>
+<div id="data-wrangling" class="section level1">
+<h1>2 Data Wrangling</h1>
+<p>We focus, primarily, on the use of open data with the understanding that this will permit other municipalities with similar open data repositories to reproduce our analysis.</p>
+<p>Our goal is to provide decision-makers with insight regarding the built-environment and regulatory factors which increase collision risk, and if possible, with an actionable path for collision-reduction. As a result, we had three goals in data collection: 1. Obtain data that has a reasonable and intuitive relationship to automobile collisions (i.e. road type, traffic volume, etc.) 2. obtain built-environment data to test our research hypothesis (i.e. road network design, road conditions, traffic control, etc.) 3. Find data that might be counterfactual to our hypothesis (segment centrality score, high density employment areas, etc.)</p>
+<p>We have grouped our data into several categories or “buckets” to facilitate the modeling approach discussed above.</p>
+<ol style="list-style-type: decimal">
+<li>Physical, road-network characteristics (i.e. road type, signs, etc.)</li>
+<li>Collision-characteristics (type, #of cars, etc.)</li>
+<li>Spatial characteristics (population density, land use, etc.)</li>
+<li>Other (waze alerts, traffic volume, etc.)</li>
+</ol>
+<p>Our sources include 311 data, Louisville open data, KIPDA data, and census data.</p>
+<div id="data-wrangling-1" class="section level2">
+<h2>2.1 Data Wrangling</h2>
+<p>Altogether, we have wrangled a total of 53 predictors:</p>
+<pre class="r"><code>segments &lt;- st_read(&quot;segments_3_21.shp&quot;)
+Predictors &lt;- segments %&gt;% as.data.frame %&gt;%dplyr::select(-FID_1, -geometry)</code></pre>
+<pre class="r"><code>colnames(Predictors)</code></pre>
+<pre><code>##  [1] &quot;Intersect&quot;  &quot;Var_SPEED&quot;  &quot;TrafficSig&quot; &quot;ONEWAY&quot;     &quot;SPEED&quot;     
+##  [6] &quot;TYPE&quot;       &quot;BIKEWAY&quot;    &quot;QtM_Police&quot; &quot;QtM_School&quot; &quot;Rd_Char&quot;   
+## [11] &quot;rank&quot;       &quot;Dist_Alcoh&quot; &quot;ZONING_COD&quot; &quot;avg_width&quot;  &quot;No_Left&quot;   
+## [16] &quot;Stop_Sign&quot;  &quot;Slow_Sign&quot;  &quot;SpdLim_Sig&quot; &quot;Yield_Sign&quot; &quot;Discnt_Lne&quot;
+## [21] &quot;DISTRICT&quot;   &quot;POP_DEN&quot;    &quot;BUS_RT&quot;     &quot;BSNS_DENS&quot;  &quot;Length&quot;    
+## [26] &quot;COLS_MILE&quot;  &quot;N_NEIGHBS&quot;  &quot;Light_Dens&quot; &quot;Emply_D&quot;    &quot;Shop_Dn&quot;   
+## [31] &quot;ParkingCit&quot; &quot;Cite_Dens&quot;  &quot;Downt_Dist&quot; &quot;NearArtery&quot; &quot;Count_2016&quot;
+## [36] &quot;Frght_R&quot;    &quot;Count_2017&quot; &quot;has_colls&quot;  &quot;volume&quot;     &quot;congestion&quot;
+## [41] &quot;potholes&quot;   &quot;rdkill&quot;     &quot;missign&quot;    &quot;hazobj&quot;     &quot;hevtraff&quot;  
+## [46] &quot;medtraff&quot;   &quot;stndtraff&quot;  &quot;lev1j&quot;      &quot;lev2j&quot;      &quot;lev3j&quot;     
+## [51] &quot;lev4j&quot;      &quot;Ave_delay&quot;  &quot;GEOID&quot;</code></pre>
+<p>Generally, the predictors fall into the following categories: built-environment, road usage, spatial/locational, and network structure.</p>
+<p>The majority of the predictors were created using the ArcGIS toolbox. These tools include calculating Euclidian distances, kernel densities, and near-tables for capturing distances to points of interest, density of events, proximity to built-environment features, respectively. Additionally, some of the predictors describing the road network itself were obtained from open-data sources and simply brought into our dataset using spatial joins. These include road conditions, road-type classifications, and speed limits.</p>
+<p>Each predictor required a different set of data-wrangling steps which included cleaning up the data, standardizing names and descriptions, geocoding unstructured spatial data, and more. To avoid lengthy discussion of each specific step, a description for each predictor, its source, and the steps taken in the wrangling process is avaiable in the Appendix.</p>
+<p>There are two categories of predictors which required special consideration in the wrangling process- predictors derived from the structure of the street network structure and predictors derived from the newly available Waze data. The process for wrangling these features is described below.</p>
+<div id="encoding-network-structure" class="section level3">
+<h3>2.1.1 Encoding Network Structure</h3>
+<p>Some of the factors that might contribute to collision risk cannot be modeled simply by looking at the attributes of individual road segments. Instead, we must consider the network as a whole and connections within it. To do this, we need encode the structure of the network so that each segment knows which other segments are connected to it, and what their attributes are.</p>
+<p>The first step to achieve this is to create a network table which models the connectivity of the network by associating each of the segments (nodes) with the other segments which it’s connected to (therefore modeling the network’s “edges”). We generate this network table by using the Near Table tool in ArcGIS with a search radius set to 0. As decribed above, we have divided our segments into two types- intersections and roads. Since we know that roads only touch intersections, and vice-versa, we can simply run the Near Table tool on both segment types, one at a time, using the other type as the near feature. We then concatonate the results into a single table.</p>
+<p>This process and resulting table is shown below.</p>
+<pre class="r"><code>library(tidyverse)
+library(dplyr)
+
+NetworkTbl_int &lt;- read_csv(&#39;NetworkData_int.csv&#39;)
+NetworkTbl_rd &lt;- read_csv(&#39;NetworkData_roads.csv&#39;)
+
+NetworkTbl &lt;- rbind(NetworkTbl_int, NetworkTbl_rd)
+
+NT &lt;- dplyr::select(NetworkTbl, FID_1, FID_12_13)
+colnames(NT) &lt;- c(&#39;FID_1&#39;, &#39;Neighb_ID&#39;)
+NT &lt;- NT[order(NT$FID_1),] 
+
+head(NT, n = 10)</code></pre>
+<pre><code>## # A tibble: 10 x 2
+##    FID_1 Neighb_ID
+##    &lt;int&gt;     &lt;int&gt;
+##  1     0     13338
+##  2     0     30745
+##  3     1        77
+##  4     1     13390
+##  5     2        55
+##  6     2        77
+##  7     3         5
+##  8     3        63
+##  9     4         5
+## 10     4     13380</code></pre>
+<p>Now that we have this network table as a reference for network connectivity, we can use it to calculate various aspects of the network which have to do with the interaction of neighboring segments. Once such aspect is the speed variance in connection points. It is known (INSERT SOURCE) that roads are safer when all traffic is flowing at the same speed. A higher degree of risk is added when speed variance is introduced such as when faster traffic merges into slower traffic or when slower turn into a high speed road.</p>
+<p>To record this speed variance, we will calculate, for each segment, the variance of the speed limits of all the segments which it’s connected to:</p>
+<pre class="r"><code>#merge speed limit to the network table
+NT &lt;- merge(x = NT, y = segments[,c(&#39;FID_1&#39;, &#39;SPEED&#39;)], by.x=&#39;Neighb_ID&#39;, by.y=&#39;FID_1&#39;, All = TRUE)
+
+#aggregate speeds by variance 
+Speed_Vars &lt;- aggregate(NT$SPEED, by=list(Category=NT$FID_1), FUN=var)
+
+#clean up NAs
+Speed_Vars[is.na(Speed_Vars)] &lt;- 0
+
+#merge back into dataset
+segments &lt;- merge(segments, Speed_Vars[,c(&#39;Category&#39;,&#39;x&#39;)], by.x=&#39;FID_1&#39;, by.y=&#39;Category&#39;, all.x = TRUE)
+segments$Var_SPEED &lt;- segments$x
+
+segments$x &lt;- NULL</code></pre>
+<pre class="r"><code>Speed_Vars &lt;- segments %&gt;% as.data.frame %&gt;% dplyr::select(FID_1, Var_SPEED)
+head(Speed_Vars[order(Speed_Vars$FID_1),], n=10)</code></pre>
+<pre><code>##    FID_1 Var_SPEED
+## 1      0 200.00000
+## 2      1 200.00000
+## 3      2  50.00000
+## 4      3 450.00000
+## 5      4 450.00000
+## 6      5  33.33333
+## 7      6 450.00000
+## 8      7 450.00000
+## 9      8 233.33333
+## 10     9  33.33333</code></pre>
+<p>A similar process can be followed to calculate the number of neighbors each segment has (through aggregating by “count”) and to interpolate missing data by filling in blanks using neighbor data.</p>
+</div>
+<div id="waze-data" class="section level3">
+<h3>2.1.2 Waze data</h3>
+<p>In September of 2015, Louisville became the <a href="https://www.bizjournals.com/louisville/news/2015/09/24/louisville-partners-with-waze-to-create-a-real.html">5th city to partner with Waze Mobile, Ltd.</a> to enhance traffic outcomes. As a result of this partnership, we have received access to a rich dataset that presents unique challenges and opportunities.</p>
+<div id="creating-the-wazedata-dataset." class="section level4">
+<h4>Creating the <code>WazeData</code> dataset.</h4>
+<p>Our data extract was provided in the form of a backup MSSQL Server Database. Upon uploading, we could explore the data’s schema. A snapshot of the schema is provided below. Before walking through the schema, let’s explore our understanding of the data generation process.</p>
+<p>Waze pings its user’s mobile phone at regular (frequent) intervals to obtain location data. Based on it’s internal models and/or proprietary historical data collection, Waze has an expectation for the amount of time that it should take a user to move through a cooridor. The company can, then, detect when someone is moving slower than normal and ping a sample users with an alert as to the cause of delays. As a result, Waze has provided tables with these anonymized trip id’s, the types of delays and the associated coordinates.</p>
+<p>To our knowledge, this is the first time anyone is adapting this dataset for predicting collisions. It should be noted that this data was created to enhance the business model of a private enterprise. Therefore, some data that might make the analysis more robust is not available and unlikely to be provided due to proprietary or legal (privacy) considerations. We, nevertheless, approached this data with the understanding that it might provide useful approximations for data that is often difficult to obtain (especially volume and congestion).</p>
+<div class="figure">
+<img src="WazeImages/wazeSchema.png" />
+
+</div>
+</div>
+<div id="challenges-to-wrangling" class="section level4">
+<h4>Challenges to Wrangling</h4>
+<p>First, the dataset is large and continuous (Readings from October 2014 to July 2017 every few minutes). There are over 15 million Jam ID’s (our unit of analysis). We selected four random days for our analysis, representing just over 350,000 Jam ID’s (just over 2% of the entire data set). We selected a random Tuesday and Thursday for two different weeks to represent a typical traffic data (10/20/2016, 10/25/2016 &amp; 11/3/2016, 11/8/2016). Weather for these days may be found at <a href="www.wunderground.com" class="uri">www.wunderground.com</a>. Two of the four days experienced light precipitation.</p>
+<p>As can be seen in the image below, these Jam ID’s present a unique challenge. For example, if the trips seen in the image below had been pinged for a delay, and the user flagged the delay as due to a pothole, clearly the pothole was not the entire length of the segment or trip. However, there is no means to identify the exact location.</p>
+<p>Instead, we decided to treat these situations as “exposure,” which is to say that if we aggregated all segments associated with or “exposed” to a particular flag, this might still suggest something important about the network in relation to the flag (even without an exact location). In the image below, though only three sets of points appear to the naked eye, they represent a sample of 16 trips (by Jam ID).</p>
+<p>Lastly, since our focus is on the relative collision-risk of each segment, we did not include timing data in our model. In the end, though time may have a relationship to collision-risk (i.e. collision-risk might increase during rush hour), we assume that the relative risk per street segment is independent of time for the purposes of focusing on the built environment.</p>
+<div class="figure">
+<img src="WazeImages/jam.png" />
+
+</div>
+</div>
+<div id="the-approach" class="section level4">
+<h4>The Approach</h4>
+<p>For congestion, we began by associating each point with its nearest segment using a near table in ArcGis. The results were disappointing, as they did not capture the inherent organization of the road network nor spatial autocorrelation. The result may be seen in the image below.</p>
+<div class="figure">
+<img src="WazeImages/congestion.png" alt="Level of Traffic Jam by Nearest Segment" />
+<p class="caption">Level of Traffic Jam by Nearest Segment</p>
+</div>
+<p>As a result, though not ideal, we used the 3 nearest points to give a more continuous representation of the network. We chose three because we wanted to be judicious without having the level “bleed” into other segments inappropriately. The results can be seen in the image below.</p>
+<div class="figure">
+<img src="WazeImages/congestion_density.png" />
+
+</div>
+<p>To obtain our average delay by segment feature, we first only considerd jam levels of 1-4 (since Waze scores jam levels of 5 with a -1 for time, while all others represent a continuous count in seconds). We then took the three nearest points per segment, averaging the delay results.</p>
+<p>For volume, we first extracted all of the points associated with located with the Jam ID’s for our sample. In ArcGis, we generated a near table to associate the points to its closest segment and aggregated the results. We immediately noticed that this method did not appear to capture the inherent organization of the network (adjacent segments received very different scores). To account for this and our suspicion that there is some spatial autocorrelation in the traffic pattern, we decided to take a kernel density of our volume points, reclassify by 100 quantiles, convert the result to a polygon and spatially join the results to our segments.</p>
+<p>The result can be seen in the images below. The results appear consistent with what might be expected. The Downtown area and main arterials appear to receive more volume overall. The same kernel density approach was taken to engineer the following features based on Waze alert data: potholes, roaddkill, missing sign on sholder, hazard object on road, heavy traffic, medium traffic, stand still traffic and level 1 through level 4 traffic jam scores as determined by Waze.</p>
+<div class="figure">
+<img src="WazeImages/congestion_density_pre.png" alt="Volume Kernel Density" />
+<p class="caption">Volume Kernel Density</p>
+</div>
+<div class="figure">
+<img src="WazeImages/volume.png" alt="Volume by Quantile" />
+<p class="caption">Volume by Quantile</p>
+</div>
+</div>
+<div id="next-steps" class="section level4">
+<h4>Next Steps</h4>
+<p>There is a potential for additional feature engineering based on an inverse distance weighted (IDW) of the rasters used to generate variables like volume. Additionally, a principle component analysis (PCA), may help to unpack additional variables.</p>
+<p>Lastly, future use may benefit from seasonal cross-validation that may take weather into account.</p>
+</div>
+</div>
+</div>
+<div id="exploratory-analysis" class="section level2">
+<h2>2.2 Exploratory Analysis</h2>
+<p>Our approach is novel in that it is a stark shift from traditional views of automobile collisions. While we allow for the possibility that variables external to the road network affect the frequency of automobile collisions, we take a “worm’s-eye” view to variables within the road network itself.</p>
+<p>If successful, this new approach stands to greatly enhance the effectiveness of policy makers in their efforts to improve road safety. This is because a better understanding of the way road features interact to produce certain risk levels provides policy makers with actionable guidance which can inform strategy and ultimately save lives.</p>
+<p>We begin exploring our data by pursuing a number of questions outlined below.</p>
+<div id="is-the-location-of-collision-events-random" class="section level3">
+<h3>2.2.1 Is the location of collision events random?</h3>
+<p>Before we can begin to address our hypothesis and any potential countervailing views, it is important to establish that the observed distribution of collision events is not the product of random chance. As a result, we can take a look at the frequency of collisions across all of our segments. Looking at the dispersion both cross-sectionally and longitudinally, we observe that the expected number of collisions and their dispersion suggest that these events are not random.</p>
+<pre class="r"><code>ggplot(segments, aes(x=Count_2017)) + geom_histogram(bins = 80) +xlim(-1,75) + ggtitle(&quot;Collision Count Distribution&quot;)</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="is-there-a-relationship-between-collisions-and-road-characteristics" class="section level3">
+<h3>2.2.2 Is there a relationship between collisions and road characteristics?</h3>
+<p>Since we hypothesize that road characteristics and the built environment influence automobile collisions, we explored the relationship of some of these characteristics to collisions.</p>
+<p>Below are a few exploratory plots which show the relationship between road features and the frequency of collisions.</p>
+<pre class="r"><code>library(dplyr)
+type_means_df &lt;- segments %&gt;% group_by(TYPE) %&gt;% summarise(me = mean(COLS_MILE))</code></pre>
+<pre class="r"><code>ggplot(type_means_df, aes(x=reorder(TYPE, -me), y=me)) + 
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;#4682b4&quot;) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+                  labs(title=&quot;Average Collisions/Mile by Segment Type&quot;,y = &#39;Average Collisions/Mile&#39;, x = &#39;Segment Type&#39;) </code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<pre class="r"><code>Intersections &lt;- segments[segments$Intersect == 1,]
+Intersections$Control &lt;- ifelse( Intersections$TrafficSig == 1, &quot;Signal&quot;, ifelse( Intersections$Stop_Sign == 1, &quot;Stop_Sign&quot;,  ifelse( Intersections$Yield_Sign == 1, &quot;Yield_Sign&quot;, &quot;None&quot; ) ))
+control_means_df &lt;- Intersections %&gt;% group_by(Control) %&gt;% summarise(me = mean(Count_2017))</code></pre>
+<pre class="r"><code>ggplot(control_means_df, aes(x=reorder(Control,-me), y=me)) + 
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;#4682b4&quot;) + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+                  labs(title=&quot;Intersection Average Collisions/Mile by Control Type&quot;,y = &#39;Average Collisions/Mile&#39;, x = &#39;Intersection Control&#39;) </code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<pre class="r"><code>Edges &lt;- segments[segments$Intersect == 0,]
+speed_means_df &lt;- Edges %&gt;% group_by(SPEED) %&gt;% summarise(me = mean(COLS_MILE))</code></pre>
+<pre class="r"><code>ggplot(speed_means_df, aes(x=SPEED, y=me)) + 
+  geom_bar(stat=&quot;identity&quot;, fill = &quot;#4682b4&quot;) + 
+  theme(axis.text.x = element_text()) +
+                  labs(title=&quot;Street Average Collisions/Mile by Speed Limit&quot;,y = &#39;Average Collisions/Mile&#39;, x = &#39;Speed Limit&#39;) </code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+</div>
+</div>
+<div id="model-selection" class="section level1">
+<h1>3 Model Selection</h1>
+<div id="set-up" class="section level2">
+<h2>3.1 Set-up</h2>
+<p>To begin training and evaluating models, we will partition our complete dataset into 2 distinct sets - a training set (containing 80% of the data), and a testing set (containing 20% of the data).</p>
+<pre class="r"><code>segments &lt;- st_read(&quot;segments_3_21.shp&quot;)
+
+set.seed(888)
+partition &lt;- createDataPartition(y=segments$ZONING_COD ,p=.75,list=F)
+training &lt;- segments[partition,]
+testing &lt;- segments[-partition,]
+
+all_results &lt;- data.frame()</code></pre>
+<p>We will now train various modela on the training set and then evaluate their predictive power by predicting the dependent variable of the testing set and measuring the degree of error (MAE). We will begin with simple models first, and continue to more sophisticated models if they improve our predictions substantially.</p>
+</div>
+<div id="predictor-groups" class="section level2">
+<h2>3.2 Predictor Groups</h2>
+<p>To eveluate the effect of different type predictors, and (more importantly) to support our hypothesis that built-environment factors can explain the variance in the frequency of collisions on different roads, we will put our predictors into groups.</p>
+<pre class="r"><code>built_env &lt;- c(&quot;TrafficSig&quot;, &quot;ONEWAY&quot;, &quot;BIKEWAY&quot;, &quot;rank&quot;, &quot;avg_width&quot;, &quot;No_Left&quot;, &quot;Stop_Sign&quot;, &quot;Slow_Sign&quot;, &quot;SpdLim_Sig&quot;, &quot;Yield_Sign&quot;, &quot;Discnt_Lne&quot;, &quot;BUS_RT&quot;, &quot;Light_Dens&quot;, &quot;Frght_R&quot;, &quot;potholes&quot;, &quot;missign&quot;)
+
+usage &lt;- c(&quot;SPEED&quot;, &quot;ParkingCit&quot;, &quot;Cite_Dens&quot;, &quot;volume&quot;, &quot;congestion&quot;, &quot;hevtraff&quot;, &quot;medtraff&quot;, &quot;stndtraff&quot;, &quot;lev1j&quot;, &quot;lev2j&quot;, &quot;lev3j&quot;, &quot;lev4j&quot;, &quot;Ave_delay&quot;)
+
+location &lt;- c(&quot;QtM_Police&quot;, &quot;QtM_School&quot;, &quot;Dist_Alcoh&quot;, &quot;ZONING_COD&quot;, &quot;DISTRICT&quot;, &quot;POP_DEN&quot;, &quot;BSNS_DENS&quot;, &quot;Emply_D&quot;, &quot;Shop_Dn&quot;, &quot;Downt_Dist&quot;, &quot;NearArtery&quot;, &quot;GEOID&quot;)
+
+network &lt;- c(&quot;Intersect&quot;, &quot;TYPE&quot;, &quot;Rd_Char&quot;, &quot;N_NEIGHBS&quot;, &quot;Var_SPEED&quot;)
+
+misc &lt;- c(&quot;Length&quot;, &quot;has_colls&quot;, &quot;hazobj&quot;,  &quot;rdkill&quot;)
+
+dont_include &lt;- c(&quot;COLS_MILE&quot;, &quot;Count_2016&quot;, &quot;geometry&quot;, &quot;FID_1&quot;)</code></pre>
+</div>
+<div id="linear-models" class="section level2">
+<h2>3.3 Linear Models</h2>
+<div id="ols-regression" class="section level3">
+<h3>3.3.1 OLS Regression</h3>
+<p>The OLS Regression model is the simplest method we will implement for prediction. The benefits of using this model are that it is simple, fast, and its results are easy to interpret. The cons are that the OLS model makes assumptions about the structure and relationships in the data that may not hold in practice- the main assumption being that the relationship between the dependent variable (Count_2017) and the predictors is linear.</p>
+<p>Additionally, OLS models typically assume that the dependent variable is normally distributed. Since we know this is not the case, we will use the Poisson variant of the OLS model in the next section.</p>
+<p>We will try a number of different predictor combinations in order to see which one produces the best predictions.</p>
+<div id="kitchen-sink-ols" class="section level4">
+<h4>“Kitchen Sink” OLS</h4>
+<pre class="r"><code>##Kitchen Sink OLS
+fit_ols &lt;- lm(Count_2017 ~ ., data = training %&gt;% 
+             as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc, Count_2017, -GEOID))</code></pre>
+<pre class="r"><code>y_hat_ols &lt;- predict(fit_ols,testing)</code></pre>
+<pre class="r"><code>library(knitr)
+mae &lt;- mae(testing$Count_2017, y_hat_ols)
+model_results &lt;- data.frame(&quot;OLS 1: Kitchen Sink&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+
+all_results &lt;- rbind(all_results, model_results)
+colnames(all_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="ols-2--removing-insignificant-predictors" class="section level4">
+<h4>OLS 2- removing insignificant predictors</h4>
+<p>Using the results from the first model (shown below), we can see if removing insignificant predictors improves the predictions.</p>
+<pre class="r"><code>##OLS2: Removing highly insignificant predictors
+fit_ols2 &lt;- lm(Count_2017 ~ ., data = training %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc, Count_2017, -GEOID, -Emply_D, -Light_Dens, -Downt_Dist, -Yield_Sign, -Slow_Sign, -QtM_Police, -No_Left, -Stop_Sign, -medtraff, -stndtraff, -lev2j, -Ave_delay, -Rd_Char))
+
+
+y_hat_ols2 &lt;- predict(fit_ols2,testing)
+mae &lt;- mae(testing$Count_2017,y_hat_ols2)
+
+model_results &lt;- data.frame(&quot;OLS 2: Signif. Predictors&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+</tbody>
+</table>
+<p>Removing these predictors didn’t change our error margin much.</p>
+</div>
+<div id="ols-3--removing-large-caterogical-variables" class="section level4">
+<h4>OLS 3- removing large caterogical variables</h4>
+<p>Next, we will remove variables with many categories as they may be reducing the accuracy of the model, this is because some of the caterogies are reported by the model as highly significant while others are not.</p>
+<pre class="r"><code>#OLS 3: Removing categorical fixed effects (Zoning,Near Artery, district, etc.)
+fit_ols3 &lt;- lm(Count_2017 ~ ., data = training %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc, Count_2017, -GEOID, -NearArtery, -ZONING_COD, -DISTRICT, -Emply_D, -Light_Dens, -Downt_Dist, -Yield_Sign, -Slow_Sign, -QtM_Police, -No_Left, -Stop_Sign, -medtraff, -stndtraff, -lev2j, -Ave_delay, -Rd_Char))
+
+y_hat_ols3 &lt;- predict(fit_ols3,testing)
+
+mae &lt;- mae(testing$Count_2017,y_hat_ols3)
+
+model_results &lt;- data.frame(&quot;OLS 3: No Numerous Categories&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+<tr class="odd">
+<td align="left">OLS 3: No Numerous Categories</td>
+<td align="right">0.7077019</td>
+</tr>
+</tbody>
+</table>
+<p>This improved our predictions slightly. We will use OLS 3 as our best OLS.</p>
+<p>The summary table of our OLS models is avaiable in Appendix 2.</p>
+</div>
+</div>
+<div id="poisson-regression" class="section level3">
+<h3>3.3.2 Poisson Regression</h3>
+<p>As mentioned above, since we are modeling predictions for count data, we know that our dependent variable is not normally distributed, and instead follows a Poisson or Negative Binomial distribution.</p>
+<p>Because of this, it is safe to assume that a Poisson linear model will perform better than the OLS model.</p>
+<div id="kitchen-sink-poisson" class="section level4">
+<h4>‘Kitchen Sink’ Poisson</h4>
+<pre class="r"><code>#Kitchen Sink Poisson
+fit_poisson &lt;- glm(Count_2017 ~ ., data = training%&gt;% 
+                     as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc, Count_2017, -GEOID), family=&quot;poisson&quot;)
+
+y_hat_poisson &lt;- predict(fit_poisson,testing, type = &quot;response&quot;)
+
+
+mae &lt;- mae(testing$Count_2017, y_hat_poisson)
+
+model_results &lt;- data.frame(&quot;Poisson 1: Kitchen Sink&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+<tr class="odd">
+<td align="left">OLS 3: No Numerous Categories</td>
+<td align="right">0.7077019</td>
+</tr>
+<tr class="even">
+<td align="left">Poisson 1: Kitchen Sink</td>
+<td align="right">0.5593530</td>
+</tr>
+</tbody>
+</table>
+<p>As expected, the Poisson model performs quite a bit better than the OLS model. Let’s see if this model can be improved further by removing insignificant predictors</p>
+</div>
+<div id="poisson-2---removing-insignificant-predictors" class="section level4">
+<h4>Poisson 2 - Removing Insignificant Predictors</h4>
+<pre class="r"><code>#Poisson 2: Removing insignificant predictors
+fit_poisson2 &lt;- glm(Count_2017 ~ ., family = &quot;poisson&quot;, data = training %&gt;% 
+                      as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc, Count_2017, -GEOID, -Slow_Sign, -Discnt_Lne, -hevtraff, -stndtraff, -BSNS_DENS, -Emply_D))
+
+y_hat_poisson2 &lt;- predict(fit_poisson2,testing, type = &quot;response&quot;)
+
+## Poisson 2 Performance
+mae &lt;- mae(testing$Count_2017, y_hat_poisson2)
+
+model_results &lt;- data.frame(&quot;Poisson 2: Signif. Predictors&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+<tr class="odd">
+<td align="left">OLS 3: No Numerous Categories</td>
+<td align="right">0.7077019</td>
+</tr>
+<tr class="even">
+<td align="left">Poisson 1: Kitchen Sink</td>
+<td align="right">0.5593530</td>
+</tr>
+<tr class="odd">
+<td align="left">Poisson 2: Signif. Predictors</td>
+<td align="right">0.5588950</td>
+</tr>
+</tbody>
+</table>
+<p>The results are almost the same. We will use the Kitchen Sink Poisson as our best Poisson.</p>
+<p>The summary table of our OLS models is avaiable in Appendix 3.</p>
+</div>
+</div>
+</div>
+<div id="non-linear-models" class="section level2">
+<h2>3.4 Non-Linear Models</h2>
+<p>Continuing our model selection, we move on to non-linear models. These models are generally more sophisticated and robust than linear models, and therefore may increase our prediction accuracy. The three model types we will test are variants of decision-tree models. These models have a number of advantages over linear models, namely they are much less negatively affected by multicolinearity and insignificant predictors, and they also do not assume a linear relationship or a particular data distribution.</p>
+<div id="cart" class="section level3">
+<h3>3.4.3 CART</h3>
+<p>The first model in this category is a regression tree model. This is a simple CART model that makes predictions by splitting our data using Information Gain Theory. We also using a “Prunning” in our model to ensure our tree does not overfit and instead predicts using only the most important predictors.</p>
+<pre class="r"><code>library(rpart)
+
+fit_tree &lt;- rpart(Count_2017 ~ .
+                         , method=&quot;anova&quot;
+                         , minsplit = 100
+                         , maxdepth = 15
+                         , data=training %&gt;% 
+                           as.data.frame %&gt;% 
+                           dplyr::select(built_env, usage, location, network, misc, Count_2017))
+
+y_hat_tree &lt;- predict(fit_tree,testing)
+
+mae &lt;- mae(testing$Count_2017, y_hat_tree)
+
+model_results &lt;- data.frame(&quot;CART&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+<tr class="odd">
+<td align="left">OLS 3: No Numerous Categories</td>
+<td align="right">0.7077019</td>
+</tr>
+<tr class="even">
+<td align="left">Poisson 1: Kitchen Sink</td>
+<td align="right">0.5593530</td>
+</tr>
+<tr class="odd">
+<td align="left">Poisson 2: Signif. Predictors</td>
+<td align="right">0.5588950</td>
+</tr>
+<tr class="even">
+<td align="left">CART</td>
+<td align="right">0.6243670</td>
+</tr>
+</tbody>
+</table>
+<p>As shown above, the model performed quite poorly in comparison to the Poisson models. Let’s move on.</p>
+</div>
+<div id="random-forest" class="section level3">
+<h3>3.4.4 Random Forest</h3>
+<p>The random forest model is essentially an ensemble of decisions tree models. A random forest model creates a large number of trees, each training on only a portion of the data and seeing only a subsect of the features. This method generally creates more robust and generalizable predictions than a single tree.</p>
+<pre class="r"><code>require(randomForest)
+
+fit_rf30 &lt;- randomForest(Count_2017 ~ .
+                         , method=&quot;anova&quot;
+                         , ntree = 30
+                         , na.action = na.exclude
+                         , data=training %&gt;% 
+                           as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc, Count_2017, -NearArtery, -GEOID))</code></pre>
+<pre class="r"><code>y_hat_rf30 &lt;- predict(fit_rf30,testing)
+
+mae &lt;- mae(testing$Count_2017, y_hat_rf30)
+
+model_results &lt;- data.frame(&quot;Random Forest (30)&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+<tr class="odd">
+<td align="left">OLS 3: No Numerous Categories</td>
+<td align="right">0.7077019</td>
+</tr>
+<tr class="even">
+<td align="left">Poisson 1: Kitchen Sink</td>
+<td align="right">0.5593530</td>
+</tr>
+<tr class="odd">
+<td align="left">Poisson 2: Signif. Predictors</td>
+<td align="right">0.5588950</td>
+</tr>
+<tr class="even">
+<td align="left">CART</td>
+<td align="right">0.6243670</td>
+</tr>
+<tr class="odd">
+<td align="left">Random Forest (30)</td>
+<td align="right">0.5236192</td>
+</tr>
+</tbody>
+</table>
+<p>The Random Forest is our best yet. The average prediction error is the lowest of all models so far.</p>
+</div>
+<div id="xgboost" class="section level3">
+<h3>3.4.5 XGBoost</h3>
+<p>The last method we will evaluate is the “Extreme Gradient Boosting” model. This method is similar in essense to the Random Forest method, but expands on it. XGboost, like Random Forest, uses many trees to make its predictions. However, when creating the trees, the algorithm iteratively examines which observations it has gotten wrong previously, and then “boosts” the importance of those variables in the next trees that it creates. This process is ran again and again, each time the additional trees contribute less and less to the model but a set amount, until the contribution of each additional tree is negligable.</p>
+<p>This algorithm tends to create a jagged decision space that is able to identify complex patterns in the data.</p>
+<pre class="r"><code>library(xgboost)
+
+XGB_data &lt;- data.matrix(training %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc))
+
+fit_xgb &lt;- xgboost(XGB_data, training$Count_2017
+                   , max_depth = 10
+                   , eta = 0.05
+                   , nthread = 2
+                   , nrounds = 800
+                   , subsample = .7
+                   , colsample_bytree = 0.9
+                   , booster = &quot;gbtree&quot;
+                   , eval_metric = &quot;mae&quot;
+                   , objective=&quot;count:poisson&quot;
+                   , base_score = 0.57
+                   , silent = 1
+                   )</code></pre>
+<pre class="r"><code>y_hat_xgb &lt;- predict(fit_xgb, data.matrix(testing %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc)))
+
+mae &lt;- mae(testing$Count_2017, y_hat_xgb)
+
+model_results &lt;- data.frame(&quot;XGBoost&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+<tr class="odd">
+<td align="left">OLS 3: No Numerous Categories</td>
+<td align="right">0.7077019</td>
+</tr>
+<tr class="even">
+<td align="left">Poisson 1: Kitchen Sink</td>
+<td align="right">0.5593530</td>
+</tr>
+<tr class="odd">
+<td align="left">Poisson 2: Signif. Predictors</td>
+<td align="right">0.5588950</td>
+</tr>
+<tr class="even">
+<td align="left">CART</td>
+<td align="right">0.6243670</td>
+</tr>
+<tr class="odd">
+<td align="left">Random Forest (30)</td>
+<td align="right">0.5236192</td>
+</tr>
+<tr class="even">
+<td align="left">XGBoost</td>
+<td align="right">0.4489563</td>
+</tr>
+</tbody>
+</table>
+<p>As may be expected, the XGBoost model, which is the most sophisticated of the bunch, produces the best predictions. We will select this method to generate our predictions for the rest of the analysis.</p>
+</div>
+</div>
+</div>
+<div id="feature-selection" class="section level1">
+<h1>4 Feature Selection</h1>
+<p>Now that we have selected an algorithm, the next step is to get rid of features which may be negatively affecting the accuracy or understandability of the predictions. Unlike with linear models, manual feature selection based on significance is more difficult to do manually when running non-linear models. Additionally, the high number of possible feature combinations make manual testing of each combination very time-consuming.</p>
+<p>Thankfully, there are algorithms available which do this work for you. We will use the “Boruta” package to run the analysis of our features and select only the ways that contribute to the acuracy of the model.</p>
+<pre class="r"><code># run Boruta analysis
+boruta.train &lt;- Boruta(Count_2017 ~ ., data = training %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc), doTrace = 0)</code></pre>
+<pre class="r"><code># save selected features
+borutaVars &lt;- getSelectedAttributes(boruta.train)</code></pre>
+<p>Boruta confirmed the following 36 features:</p>
+<pre class="r"><code>print(borutaVars)</code></pre>
+<pre><code>##  [1] &quot;Intersect&quot;  &quot;Var_SPEED&quot;  &quot;TrafficSig&quot; &quot;ONEWAY&quot;     &quot;SPEED&quot;     
+##  [6] &quot;TYPE&quot;       &quot;Dist_Alcoh&quot; &quot;ZONING_COD&quot; &quot;avg_width&quot;  &quot;Stop_Sign&quot; 
+## [11] &quot;SpdLim_Sig&quot; &quot;DISTRICT&quot;   &quot;POP_DEN&quot;    &quot;BSNS_DENS&quot;  &quot;Length&quot;    
+## [16] &quot;N_NEIGHBS&quot;  &quot;Emply_D&quot;    &quot;Shop_Dn&quot;    &quot;ParkingCit&quot; &quot;Cite_Dens&quot; 
+## [21] &quot;Downt_Dist&quot; &quot;NearArtery&quot; &quot;Frght_R&quot;    &quot;volume&quot;     &quot;potholes&quot;  
+## [26] &quot;rdkill&quot;     &quot;missign&quot;    &quot;hazobj&quot;     &quot;hevtraff&quot;   &quot;medtraff&quot;  
+## [31] &quot;stndtraff&quot;  &quot;lev1j&quot;      &quot;lev2j&quot;      &quot;lev3j&quot;      &quot;lev4j&quot;     
+## [36] &quot;GEOID&quot;</code></pre>
+<p>Unfortunately, many of the built-environment features which we were interested in were marked as “tentative” or were rejected (BIKEWAY, rank, No_Left, Slow_Sign, Yield_Sign, Discnt_Lne). For the purposes of this analysis, and in order to continue examining our hypothesis, we will bring those variables back in.</p>
+<p>Although we know that those features do not greatly affect our predictions, even a small effect may be important to observe.</p>
+<p>This leaves us with a total of 42 predictors which can be broken up as follows:</p>
+<pre class="r"><code>built_env &lt;- c(&quot;TrafficSig&quot;, &quot;ONEWAY&quot;, &quot;BIKEWAY&quot;, &quot;rank&quot;, &quot;avg_width&quot;, &quot;No_Left&quot;, &quot;Stop_Sign&quot;, &quot;Slow_Sign&quot;, &quot;SpdLim_Sig&quot;, &quot;Yield_Sign&quot;, &quot;Discnt_Lne&quot;, &quot;Frght_R&quot;, &quot;potholes&quot;, &quot;missign&quot;)
+
+usage &lt;- c(&quot;SPEED&quot;, &quot;ParkingCit&quot;, &quot;Cite_Dens&quot;, &quot;volume&quot;, &quot;hevtraff&quot;, &quot;medtraff&quot;, &quot;stndtraff&quot;, &quot;lev1j&quot;, &quot;lev2j&quot;, &quot;lev3j&quot;, &quot;lev4j&quot;)
+
+location &lt;- c(&quot;Dist_Alcoh&quot;, &quot;ZONING_COD&quot;, &quot;DISTRICT&quot;, &quot;POP_DEN&quot;, &quot;BSNS_DENS&quot;, &quot;Emply_D&quot;, &quot;Shop_Dn&quot;, &quot;Downt_Dist&quot;, &quot;NearArtery&quot;, &quot;GEOID&quot;)
+
+network &lt;- c(&quot;Intersect&quot;, &quot;TYPE&quot;, &quot;N_NEIGHBS&quot;, &quot;Var_SPEED&quot;)
+
+misc &lt;- c(&quot;Length&quot;, &quot;hazobj&quot;,  &quot;rdkill&quot;)
+
+dont_include &lt;- c(&quot;COLS_MILE&quot;, &quot;Count_2016&quot;, &quot;geometry&quot;, &quot;FID_1&quot;)</code></pre>
+<p>Let’s see whether this feature selection process has improved the predictive capacity of our model.</p>
+<pre class="r"><code>XGB_data_selected &lt;- data.matrix(training %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc))
+
+fit_xgb &lt;- xgboost(XGB_data_selected, training$Count_2017
+                   , max_depth = 10
+                   , eta = 0.05
+                   , nthread = 2
+                   , nrounds = 800
+                   , subsample = .7
+                   , colsample_bytree = 0.9
+                   , booster = &quot;gbtree&quot;
+                   , eval_metric = &quot;mae&quot;
+                   , objective=&quot;count:poisson&quot;
+                   , base_score = 0.57
+                   , silent = 1
+                   )</code></pre>
+<pre class="r"><code>y_hat_xgb &lt;- predict(fit_xgb,data.matrix(testing %&gt;% as.data.frame %&gt;% dplyr::select(colnames(XGB_data_selected))))
+
+mae &lt;- mae(testing$Count_2017, y_hat_xgb)
+
+model_results &lt;- data.frame(&quot;XGBoost (selected features)&quot;, mae)
+colnames(model_results) &lt;- c(&quot;model&quot;, &quot;mean absolute error (MAE)&quot;)
+all_results &lt;- rbind(all_results, model_results)
+
+kable(all_results, caption=&quot;Model Results&quot;)</code></pre>
+<table>
+<caption>Model Results</caption>
+<thead>
+<tr class="header">
+<th align="left">model</th>
+<th align="right">mean absolute error (MAE)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">OLS 1: Kitchen Sink</td>
+<td align="right">0.7347737</td>
+</tr>
+<tr class="even">
+<td align="left">OLS 2: Signif. Predictors</td>
+<td align="right">0.7252437</td>
+</tr>
+<tr class="odd">
+<td align="left">OLS 3: No Numerous Categories</td>
+<td align="right">0.7077019</td>
+</tr>
+<tr class="even">
+<td align="left">Poisson 1: Kitchen Sink</td>
+<td align="right">0.5593530</td>
+</tr>
+<tr class="odd">
+<td align="left">Poisson 2: Signif. Predictors</td>
+<td align="right">0.5588950</td>
+</tr>
+<tr class="even">
+<td align="left">CART</td>
+<td align="right">0.6243670</td>
+</tr>
+<tr class="odd">
+<td align="left">Random Forest (30)</td>
+<td align="right">0.5236192</td>
+</tr>
+<tr class="even">
+<td align="left">XGBoost</td>
+<td align="right">0.4489563</td>
+</tr>
+<tr class="odd">
+<td align="left">XGBoost (selected features)</td>
+<td align="right">0.4469854</td>
+</tr>
+</tbody>
+</table>
+<p>The results are practically the same. Less is more when it comes to feature selection, so we will continue with the reduced set of 42 predictors.</p>
+<p>The plot below shows the amount by which each of the features influences the final prediction:</p>
+<pre class="r"><code>## Plot the feature importance
+importance_matrix &lt;- xgb.importance(colnames(XGB_data_selected), model = fit_xgb)
+xgb.plot.importance(importance_matrix = importance_matrix[1:42])</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-37-1.png" width="1056" /></p>
+<p>As shown by the plot, speed limit is the strongest feature in the model (meaning it is the most predictive of collision count). Other important features are segment length (which is not really indicative of anything in real life, but rather of our modeling choices), distance to alcohol permits, freight routes, and distance to the CBD.</p>
+<p>It is extremely important to keep in mind that features may not always measure only what we think they do- often, features act as proxies for other measures. For example, distance to alcohol might be so predictive because it actually measures proximity to busy commercial areas (which also happen to have more bars). This kind of measurement issues are very hard to detect and prove, and therefore we can not claim any causal relationships betwee the predictors and the dependent variable without scientifically studying each predictor separately.</p>
+</div>
+<div id="cross-validation" class="section level1">
+<h1>5 Cross-Validation</h1>
+<p>Although the mean absolute error of our predictions was lowest when using the XGBoost model, we need to make sure that these results are stable, generalizable, and consistent cross our data. In other words, we need to make sure that our model predicts equally well for all our observations, as opposed to predicting very well for some and more poorly for others.</p>
+<p>To evaluate the generalizability of our model, we will subsect our data in different ways and see if the results remain consistent. We will use three separate methods: K-fold CV, Spatial CV, and Temporal CV.</p>
+<div id="k-fold-cross-validation" class="section level2">
+<h2>5.1 K-Fold Cross-Validation</h2>
+<p>The K-fold CV method simply divides the entire segments dataset into K sections, of folds (in this case K = 10). Then, the formula will use 9 of the folds to train our model and predict the dependent variable of the remaining fold. This process will be repeated for each of the folds, resulting in 10 different MAE’s.</p>
+<p>Our goal is to see the MAE remain consistent across all the folds. That will bode well for the generalizability of our model. We will also include the other models we’ve trained in this validation, to see whether the results change across the folds.</p>
+<pre class="r"><code>fitControl &lt;- trainControl(method = &quot;cv&quot;, number = 10)
+
+set.seed(825) #set seed for random number generator
+
+#OLS 10-FOLD CV
+lmFit &lt;- train(Count_2017 ~ ., 
+               data = segments %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc,                 Count_2017, -GEOID, -NearArtery, -ZONING_COD, -DISTRICT, -Emply_D, -Light_Dens, -Downt_Dist,                   -Yield_Sign, -Slow_Sign, -QtM_Police, -No_Left, -Stop_Sign, -medtraff, -stndtraff, -lev2j,                     -Ave_delay, -Rd_Char),  
+               method = &quot;lm&quot;, 
+               trControl = fitControl)
+
+lmFit_Tbl &lt;- as.data.frame(lmFit$resample)
+
+#Poisson 10-FOLD CV
+glmFit &lt;- train(Count_2017 ~ ., 
+                data = segments %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location,   network,                     misc, Count_2017, -GEOID, -Slow_Sign, -Discnt_Lne, -hevtraff, -stndtraff, -BSNS_DENS,                         -Emply_D), 
+                method = &quot;glm&quot;,
+                family = &quot;poisson&quot;,
+                trControl = fitControl,
+                na.action=na.exclude
+                )
+
+glmFit_Tbl &lt;- as.data.frame(glmFit$resample)
+
+#Random Forest 10-FOLD CV
+rfFit &lt;- train(Count_2017 ~ ., 
+                data = training %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc,                        Count_2017, -NearArtery, -GEOID) ,
+                method = &quot;rf&quot;,
+                ntree = 30,
+                trControl = fitControl,
+                na.action=na.exclude,
+                metric = &quot;MAE&quot;, 
+                maximize = F,
+                objective=&quot;count:poisson&quot;)
+
+rfFit_Tbl &lt;- as.data.frame(rfFit$resample)
+
+#XGB 10-FOLD CV
+XGB_data &lt;- segments %&gt;% as.data.frame %&gt;% dplyr::select(built_env, usage, location, network, misc, Count_2017)
+
+tuneGrid &lt;- data.frame(nrounds = 800, max_depth = 10, eta = 0.02, gamma = 0, colsample_bytree = .7, 
+                       min_child_weight = 1, subsample = .7)
+
+xgbFit &lt;- train(Count_2017 ~ ., 
+                data = XGB_data,
+                method = &quot;xgbTree&quot;,
+                trControl = fitControl,
+                na.action=na.exclude,
+                tuneGrid = tuneGrid,
+                metric = &quot;MAE&quot;, 
+                maximize = F,
+                objective=&quot;count:poisson&quot;)
+
+xgbFit_Tbl &lt;- as.data.frame(xgbFit$resample)
+
+#merge all results into one table
+CV_table &lt;- list(lmFit_Tbl[,c(&quot;MAE&quot;,&quot;Resample&quot;)],glmFit_Tbl[,c(&quot;MAE&quot;,&quot;Resample&quot;)],rfFit_Tbl[,c(&quot;MAE&quot;,&quot;Resample&quot;)],xgbFit_Tbl[,c(&quot;MAE&quot;,&quot;Resample&quot;)]) %&gt;%
+  Reduce(function(df1,df2) inner_join(df1,df2,by=&quot;Resample&quot;), .)</code></pre>
+<pre class="r"><code>#put table into long format for plotting
+library(tidyverse)
+CV_table_long &lt;- gather(CV_table, Method, value, -FOLD)
+
+#plot results
+library(yarrr)
+
+colors &lt;- as.vector(piratepal(palette = &quot;info&quot;))[1:4]
+
+ggplot(CV_table_long, aes(FOLD, value)) +   
+  geom_bar(aes(fill = Method), color = &quot;black&quot;, stat=&quot;identity&quot;, width=0.6, position = position_dodge(width=0.6)) + ylab(&quot;MAE&quot;) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  scale_fill_manual(&quot;Method&quot;, values = c(colors)) +ggtitle(&quot;10-Fold Cross-Validation Results&quot;)</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-40-1.png" width="1056" /></p>
+<p>As our 10 Fold CV results show, there is no significant change in our results from fold to fold. This means our model(s) pass this round of cross-validation.</p>
+</div>
+<div id="spatial-cross-validation" class="section level2">
+<h2>5.2 Spatial Cross-Validation</h2>
+<p>COMING SOON</p>
+</div>
+<div id="temporal-cross-validation" class="section level2">
+<h2>5.3 Temporal Cross-Validation</h2>
+<p>COMING SOON</p>
+</div>
+</div>
+<div id="model-results" class="section level1">
+<h1>6 Model Results</h1>
+<div id="plotting-results" class="section level2">
+<h2>6.1 Plotting Results</h2>
+<p>In this section we will analyze our model’s predictions.</p>
+<p>We will use the trained model to make predictions on our entire dataset.</p>
+<pre class="r"><code>y_hat_xgb &lt;- predict(fit_xgb, data.matrix(segments %&gt;% as.data.frame %&gt;% dplyr::select(colnames(XGB_data_selected))))
+
+#create a new dataset which will include our results
+segments_w_pred &lt;- segments
+
+#save the results
+segments_w_pred$y_hat_xgb &lt;- y_hat_xgb
+
+#calculate residuals (errors)
+segments_w_pred$Resids &lt;- segments_w_pred$Count_2017 - segments_w_pred$y_hat_xgb
+
+#calculate absolute errors
+segments_w_pred$abs_res &lt;- abs(segments_w_pred$Resids)
+
+#normalize the predictions by dividing the predicted count by segment length
+segments_w_pred$Pred_COLSM &lt;- segments_w_pred$y_hat_xgb/segments_w_pred$Length</code></pre>
+<div id="residual-distribution" class="section level3">
+<h3>Residual Distribution:</h3>
+<pre class="r"><code>y_hat_xgb &lt;- predict(fit_xgb, data.matrix(testing %&gt;% as.data.frame %&gt;% dplyr::select(colnames(XGB_data_selected))))
+
+xgb_results &lt;- as.data.frame(cbind(y_hat_xgb, testing$Count_2017))
+colnames(xgb_results) &lt;- c(&quot;Predicted&quot;, &quot;Observed&quot;)
+
+ggplot(xgb_results, aes(xgb_results$Observed-xgb_results$Predicted)) + geom_histogram(bins = 200) +
+  labs(x=&quot;Residuals&quot;,
+       y=&quot;Count&quot;) + xlim(-30,30)</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-42-1.png" width="672" /></p>
+<p>The residuals distribution bodes well for the model, as it is highly clustered around 0.</p>
+</div>
+<div id="predicted-as-a-function-of-observed" class="section level3">
+<h3>Predicted as a function of observed:</h3>
+<pre class="r"><code>#Observed &amp; Predicted
+ggplot(data = xgb_results, aes(x = xgb_results$Predicted , y = xgb_results$Observed)) +
+  geom_point(size = 1) + xlab(&quot;Predicted&quot;) + ylab(&quot;Observed&quot;) + ggtitle(&quot;Observed Values vs. Predicted Values&quot;) +  
+  theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method=&quot;lm&quot;)  </code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-43-1.png" width="672" /></p>
+<p>The predicted vs observed plot indicates that the model performs better when predicting lower values. As we move from the left to the right along the x-axis (from lower to higher values), the predicted and observed values because less correlated.</p>
+</div>
+<div id="residuals-as-a-function-of-observed" class="section level3">
+<h3>Residuals as a function of observed:</h3>
+<pre class="r"><code>#Observed &amp; Residuals
+ggplot(data = xgb_results, aes(x = xgb_results$Observed , y = xgb_results$Observed - xgb_results$Predicted)) +
+  geom_point(size = 1) + xlab(&quot;Observed&quot;) + ylab(&quot;Residual&quot;) + ggtitle(&quot;XGB: Residuals as function of observed value&quot;) +  
+  theme(plot.title = element_text(hjust = 0.5)) + geom_smooth(method=&quot;lm&quot;) + geom_hline(yintercept = 0) </code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-44-1.png" width="672" /></p>
+<p>As with the previous plot, the residuals vs observed plot indicates that our model performs better when predicting lower values. Additionally, this indicates that the model systematically under-predicts the collision count in high count observations.</p>
+<p>This result is not totally unexpected, since there are so many more observations with low values in our dataset, the model is more tuned to predict values in that range.</p>
+</div>
+</div>
+<div id="mapping-the-results" class="section level2">
+<h2>6.2 Mapping The Results</h2>
+<p>Let’s plot our predictions on the street grid:</p>
+<pre class="r"><code>library(viridis)
+
+mapTheme &lt;- function(base_size = 12) {
+  theme(
+    text = element_text( color = &quot;black&quot;),
+    plot.title = element_text(size = 14,colour = &quot;black&quot;),
+    plot.subtitle=element_text(face=&quot;italic&quot;),
+    plot.caption=element_text(hjust=0),
+    axis.ticks = element_blank(),
+    panel.background = element_rect(fill = &quot;black&quot;),
+    axis.title = element_blank(),
+    axis.text = element_blank(),
+    axis.title.x = element_blank(),
+    axis.title.y = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.border = element_rect(colour = &quot;black&quot;, fill=NA, size=2),
+    legend.position = c(0, 1),
+    legend.justification = c(0, 1),
+    legend.background = element_rect(colour = NA, fill = &quot;black&quot;),
+    legend.title = element_text(colour = &quot;white&quot;),
+    legend.text = element_text(colour = &quot;white&quot;),
+  )
+}
+
+ggplot() +
+  geom_sf(data = segments_w_pred, aes(fill=factor(ntile(Pred_COLSM,5)))) +
+  scale_fill_viridis(&quot;Predicted Counts\n(Quintiles)&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;, labels   = c(&quot;Low&quot;, &quot;&quot;,&quot;&quot;,&quot;&quot;, &quot;High&quot;)) + ggtitle(&quot;Model Predictions&quot;) + 
+  scale_color_viridis(&quot;Absolute Residuals\n(Quintiles)&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;,       labels = c(&quot;Low&quot;, &quot;&quot;,&quot;&quot;,&quot;&quot;, &quot;High&quot;)) +
+  geom_sf(data = segments_w_pred, aes(colour=factor(ntile(Pred_COLSM,5))), size = 0.1, show_guide=FALSE) +
+  mapTheme()</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-45-1.png" width="1056" /></p>
+<p>Next, let’s map our errors:</p>
+<pre class="r"><code>ggplot() +
+  geom_sf(data = segments_w_pred, aes(fill=factor(ntile(abs_res,5)))) +
+  scale_fill_viridis(&quot;Absolute Errors\n(Quintiles)&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;, labels   = c(&quot;Low&quot;, &quot;&quot;,&quot;&quot;,&quot;&quot;, &quot;High&quot;)) + ggtitle(&quot;Predictions Errors&quot;) + 
+  scale_color_viridis(&quot;Absolute Residuals\n(Quintiles)&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;,       labels = c(&quot;Low&quot;, &quot;&quot;,&quot;&quot;,&quot;&quot;, &quot;High&quot;)) +
+  geom_sf(data = segments_w_pred, aes(colour=factor(ntile(abs_res,5))), size = 0.1, show_guide=FALSE) +
+  mapTheme()</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-46-1.png" width="1056" /></p>
+<p>The absolute residual map shows that the errors are concentrated around downtown. This is likely to be not due to spatial patterns that were not captured in the model; rather, it might be due to the fact that (as we saw in the plots above) our model is not as good at predicting exact values in segments that have high collision counts. Since downtown and the freeway system contain many of the high-collision segments, they also exhibit a higher degree of error.</p>
+<p>This clustering in space of residual values is not only plainly visible, but can also be calculated statistically. We will do just that in the Moran’s I section below.</p>
+<p>But before that, let’s zoom in a bit and examine the predictions from more up close.</p>
+<div id="taking-a-closer-look" class="section level4">
+<h4>Taking a closer look</h4>
+<pre class="r"><code>library(raster)
+library(rgeos)
+library(viridis)
+library(gridExtra)
+
+# create a function that allows us to clip our segments
+crop_custom &lt;- function(poly.sf, coords) {
+  poly.sf.p &lt;- st_transform(poly.sf, 4326)
+  poly.sp &lt;- as(poly.sf.p, &quot;Spatial&quot;)
+  poly.sp.crop &lt;- crop(poly.sp, extent(c(coords)))
+  cropped &lt;- st_as_sf(poly.sp.crop)
+  cropped
+}</code></pre>
+<p>Downtown:</p>
+<pre class="r"><code>#downtown
+coords &lt;- c(-85.774107,-85.737028,38.23594, 38.262835)
+downtown &lt;- crop_custom(segments_w_pred, coords)
+
+dt.pred &lt;- ggplot() + geom_sf(data = downtown, aes(fill=factor(ntile(y_hat_xgb,5))), size = 0.5) + geom_sf(data = downtown, aes(color=factor(ntile(y_hat_xgb,5))), show_guide=FALSE) +
+  scale_color_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  scale_fill_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;, labels = c(&quot;Low&quot;, &quot;&quot;,&quot;&quot;,&quot;&quot;, &quot;High&quot;)) + ggtitle(&quot;Collision Count: Prediction&quot;) + mapTheme() + theme(legend.background = element_blank())
+
+dt.obs &lt;- ggplot() + geom_sf(data = downtown, aes(colour=factor(ntile(Count_2017,5))), size = 0.5, show_guide=FALSE) + 
+  scale_color_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  theme(legend.position=&quot;none&quot;) + ggtitle(&quot;Collision Count: Actual&quot;) + mapTheme()
+
+dt.resid &lt;- ggplot() + geom_sf(data = downtown, aes(colour=factor(ntile(abs_res,5))), size = 0.5, show_guide=FALSE) + 
+  scale_color_viridis(&quot;&quot;,discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  theme(legend.position=&quot;none&quot;) + ggtitle(&quot;Absolute Errors&quot;) + mapTheme()
+
+grid.arrange(dt.pred,dt.obs,dt.resid, heights=unit(0.75, &quot;npc&quot;), ncol=3)</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-48-1.png" width="1056" /></p>
+<p>Bardstown Road:</p>
+<pre class="r"><code>#Bardstown
+coords &lt;- c(-85.731792,-85.694713,38.218848, 38.245749)
+Bardstown &lt;- crop_custom(segments_w_pred, coords)
+
+Bardstown.pred &lt;- ggplot() + geom_sf(data = Bardstown, aes(fill=factor(ntile(y_hat_xgb,5))), size = 0.5) + 
+  geom_sf(data = Bardstown, aes(color=factor(ntile(y_hat_xgb,5))), show_guide=FALSE) +
+  scale_color_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  scale_fill_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;, labels = c(&quot;Low&quot;, &quot;&quot;,&quot;&quot;,&quot;&quot;, &quot;High&quot;)) +
+  ggtitle(&quot;Collision Count: Prediction&quot;) + mapTheme() + theme(legend.background = element_blank())
+
+Bardstown.obs &lt;- ggplot() + geom_sf(data = Bardstown, aes(colour=factor(ntile(Count_2017,5))), size = 0.5, show_guide=FALSE) + 
+  scale_color_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  theme(legend.position=&quot;none&quot;) + ggtitle(&quot;Collision Count: Actual&quot;) + mapTheme()
+
+Bardstown.resid &lt;- ggplot() + geom_sf(data = Bardstown, aes(colour=factor(ntile(abs_res,5))), size = 0.5, show_guide=FALSE) + 
+  scale_color_viridis(&quot;&quot;,discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  theme(legend.position=&quot;none&quot;) + ggtitle(&quot;Absolute Errors&quot;) + mapTheme() 
+
+grid.arrange(Bardstown.pred,Bardstown.obs,Bardstown.resid, heights=unit(0.75, &quot;npc&quot;), ncol=3)</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-49-1.png" width="1056" /></p>
+<p>Johnsontown Area:</p>
+<pre class="r"><code>#Johnsontown
+coords &lt;- c(-85.890083,-85.810635,38.082091,38.145399)
+Johnsontown &lt;- crop_custom(segments_w_pred, coords)
+
+Johnsontown.pred &lt;- ggplot() + geom_sf(data = Johnsontown, aes(fill=factor(ntile(y_hat_xgb,5))), size = 0.5) +
+  geom_sf(data = Johnsontown, aes(color=factor(ntile(y_hat_xgb,5))), show_guide=FALSE) +
+  scale_color_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  scale_fill_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;, labels = c(&quot;Low&quot;, &quot;&quot;,&quot;&quot;,&quot;&quot;, &quot;High&quot;)) +
+  ggtitle(&quot;Collision Count: Prediction&quot;) + mapTheme() + theme(legend.background = element_blank())
+
+Johnsontown.obs &lt;- ggplot() + geom_sf(data = Johnsontown, aes(colour=factor(ntile(Count_2017,5))), size = 0.5, show_guide=FALSE) + 
+  scale_color_viridis(&quot;&quot;, discrete = TRUE, direction = 1, option=&quot;viridis&quot;) +
+  theme(legend.position=&quot;none&quot;) + ggtitle(&quot;Collision Count: Actual&quot;) + mapTheme()
+
+Johnsontown.resid &lt;- ggplot() + geom_sf(data = Johnsontown, aes(colour=factor(ntile(abs_res,5))), size = 0.5, show_guide=FALSE) + scale_color_viridis(&quot;&quot;,discrete = TRUE, direction = 1, option=&quot;viridis&quot;) + theme(legend.position=&quot;none&quot;) + ggtitle(&quot;Absolute Errors&quot;) + mapTheme() 
+
+grid.arrange(Johnsontown.pred,Johnsontown.obs,Johnsontown.resid, heights=unit(0.75, &quot;npc&quot;), ncol=3)</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-50-1.png" width="1056" /></p>
+</div>
+</div>
+<div id="morans-i" class="section level2">
+<h2>6.3 Moran’s I</h2>
+<p>As we saw in the overall residual map, the model’s errors appear to be clustered in space. Generally, this would indicate that the model is not incorporating some spatial dynamic which is causing the prediction quality to deteriorate. However, we believe that the this is due to the fact that road types and collision density are also clustered in space around the downtown.</p>
+<p>The Moran’s I test below shows that the clustering of the residuals in space is statistically significant.</p>
+<pre class="r"><code>centroids &lt;- st_transform(st_centroid(segments_w_pred),4326 )
+centroids &lt;- centroids %&gt;% dplyr::select(abs_res, geometry)
+centroids$lat &lt;- unlist(centroids$geometry)[ c(TRUE,FALSE) ]
+centroids$lon &lt;- unlist(centroids$geometry)[ c(FALSE,TRUE) ]
+
+library(spdep)
+coords &lt;- cbind(centroids$lat, centroids$lon)
+spatialWeights &lt;- knn2nb(knearneigh(coords, 4))
+moranTest &lt;- moran.mc(segments_w_pred$Resid, nb2listw(spatialWeights, style=&quot;W&quot;), nsim=999)
+
+moranTest</code></pre>
+<pre><code>## 
+##  Monte-Carlo simulation of Moran I
+## 
+## data:  segments_w_pred$Resid 
+## weights: nb2listw(spatialWeights, style = &quot;W&quot;)  
+## number of simulations + 1: 1000 
+## 
+## statistic = 0.027704, observed rank = 1000, p-value = 0.001
+## alternative hypothesis: greater</code></pre>
+<pre class="r"><code>ggplot(as.data.frame(moranTest$res), aes(moranTest$res)) + 
+  geom_histogram(binwidth = 0.001) +
+  geom_vline(aes(xintercept = moranTest$statistic), colour = &quot;red&quot;,size=1) +
+  scale_x_continuous(limits = c(-0.05, 0.05)) + xlab(&quot;Moran&#39;s I Statistic&quot;) + ylab(&quot;Count&quot;) +
+  labs(title=&quot;Observed and permuted Moran&#39;s I&quot;)</code></pre>
+<p><img src="markdown_files/figure-html/unnamed-chunk-51-1.png" width="672" /></p>
+</div>
+</div>
+<div id="comparison-metrics" class="section level1">
+<h1>7 Comparison Metrics</h1>
+<p>To evaluate if and how much our model is improving on traditional collision modeling methods, we must evaluate the results of those methods and use them as a benchmark. Our model is only useful if it manages to out-perform traditional and less complicated methods.</p>
+<p>We are proposing two possible methods of comparison: Kernel Density and a Type/Location Weighted Average.</p>
+<div id="kernel-density-comparison" class="section level2">
+<h2>7.1 Kernel Density Comparison</h2>
+<p>COMING SOON</p>
+</div>
+<div id="typelocation-weighted-average" class="section level2">
+<h2>7.2 Type/Location Weighted Average</h2>
+<p>EXPLANATION COMING SOON</p>
+<pre class="r"><code>Type_Averages &lt;- aggregate(Count_2017~SPEED+GEOID, segments, mean)
+colnames(Type_Averages) &lt;- c(&quot;SPEED&quot;, &quot;GEOID&quot;, &quot;Type_Est&quot;)
+
+segments_w_pred &lt;- merge(x = segments_w_pred, y = Type_Averages, by = c(&quot;GEOID&quot;,&quot;SPEED&quot;))
+
+mae(segments_w_pred$Type_Est, segments_w_pred$Count_2017)</code></pre>
+<pre><code>## [1] 0.652487</code></pre>
+</div>
+</div>
+<div id="appendix" class="section level1">
+<h1>Appendix</h1>
+<div id="data-glossary-coming-soon" class="section level2">
+<h2>Data Glossary (COMING SOON)</h2>
+<ol style="list-style-type: decimal">
+<li>Pavement Condition Index: carto: <a href="https://louisvillemetro-ms.carto.com/tables/pavement_condition_index_071817/public" class="uri">https://louisvillemetro-ms.carto.com/tables/pavement_condition_index_071817/public</a></li>
+<li>Business location: carto: <a href="https://mgottholsen.carto.com/tables/businesses/public" class="uri">https://mgottholsen.carto.com/tables/businesses/public</a></li>
+<li>Zoning: Louisville Open Data: <a href="http://data.lojic.org/datasets/jefferson-county-ky-zoning" class="uri">http://data.lojic.org/datasets/jefferson-county-ky-zoning</a></li>
+<li>Form District: Louisville Open Data: <a href="https://data.louisvilleky.gov/dataset/form-districts" class="uri">https://data.louisvilleky.gov/dataset/form-districts</a> 5, Street Centerline: Louisville Open Data: <a href="https://data.louisvilleky.gov/dataset/street-centerline" class="uri">https://data.louisvilleky.gov/dataset/street-centerline</a></li>
+<li>Traffic Signs: Louisville Open Data: <a href="https://data.louisvilleky.gov/dataset/traffic-signs" class="uri">https://data.louisvilleky.gov/dataset/traffic-signs</a></li>
+<li>Police Stations: Louisville Open Data: <a href="http://data.lojic.org/datasets/jefferson-county-ky-police-stations" class="uri">http://data.lojic.org/datasets/jefferson-county-ky-police-stations</a></li>
+<li>School Location: <a href="https://mgottholsen.carto.com/tables/k_12_schools/public" class="uri">https://mgottholsen.carto.com/tables/k_12_schools/public</a></li>
+<li>Bus Route: Louisville Open Data: <a href="http://data.lojic.org/datasets/2e1994fd95bb48c393f90d1a54ab39c8_1" class="uri">http://data.lojic.org/datasets/2e1994fd95bb48c393f90d1a54ab39c8_1</a></li>
+<li>Bike Route: Louisville Open Data: <a href="http://data.lojic.org/datasets/jefferson-county-ky-bikeways" class="uri">http://data.lojic.org/datasets/jefferson-county-ky-bikeways</a></li>
+<li>Traffic Collision: Louisville Open Data: <a href="https://data.louisvilleky.gov/dataset/traffic-collisions" class="uri">https://data.louisvilleky.gov/dataset/traffic-collisions</a></li>
+<li>Distance to Alcohol: Louisville Open Data:</li>
+<li>Population Density: Census Data</li>
+</ol>
+</div>
+<div id="ols-regression-results" class="section level2">
+<h2>OLS Regression Results</h2>
+<pre class="r"><code>library(stargazer)
+
+stargazer(fit_ols, fit_ols2, fit_ols3, title=&quot;OLS Results&quot;, align=TRUE, type = &quot;text&quot;, omit.stat=c(&quot;LL&quot;,&quot;ser&quot;,&quot;f&quot;), ci=FALSE, single.row=TRUE,digits = 2)</code></pre>
+<pre><code>## 
+## OLS Results
+## ====================================================================================================
+##                                                              Dependent variable:                    
+##                                          -----------------------------------------------------------
+##                                                                  Count_2017                         
+##                                                  (1)                 (2)                 (3)        
+## ----------------------------------------------------------------------------------------------------
+## TrafficSig                                 4.62*** (0.10)      4.54*** (0.10)      4.59*** (0.10)   
+## ONEWAY                                     -0.83*** (0.06)     -0.54*** (0.06)     -0.64*** (0.06)  
+## BIKEWAY                                    -0.33*** (0.07)     -0.25*** (0.07)     -0.37*** (0.07)  
+## rankC                                      -0.21*** (0.05)     -0.15*** (0.05)     -0.11** (0.05)   
+## rankE                                      -0.11** (0.05)       -0.06 (0.05)        -0.01 (0.05)    
+## avg_width                                 0.004*** (0.001)    0.004*** (0.001)    0.005*** (0.001)  
+## No_Left                                    0.62*** (0.23)                                           
+## Stop_Sign                                   -0.03 (0.04)                                            
+## Slow_Sign                                   -0.16 (0.16)                                            
+## SpdLim_Sig                                 -0.21*** (0.03)     -0.18*** (0.03)     -0.19*** (0.03)  
+## Yield_Sign                                  -0.06 (0.12)                                            
+## Discnt_Lne                                  0.41* (0.22)        0.45** (0.21)      0.59*** (0.22)   
+## BUS_RT                                     0.59*** (0.04)      0.56*** (0.04)      0.58*** (0.04)   
+## Light_Dens                                 0.003** (0.001)                                          
+## Frght_R                                    0.55*** (0.06)      0.58*** (0.06)      0.56*** (0.06)   
+## potholes                                   -0.10*** (0.02)     -0.08*** (0.01)     -0.13*** (0.01)  
+## missign                                    0.004* (0.002)       0.001 (0.002)      0.004** (0.002)  
+## SPEED                                      0.03*** (0.003)     0.02*** (0.003)     0.03*** (0.003)  
+## ParkingCit                                 0.02*** (0.002)     0.02*** (0.003)     0.01*** (0.003)  
+## Cite_Dens                                  0.02*** (0.003)     0.02*** (0.003)     0.01*** (0.002)  
+## volume                                    -0.002** (0.001)     -0.002* (0.001)    -0.004*** (0.001) 
+## congestion                                  -0.02 (0.01)        -0.02 (0.01)        -0.02 (0.01)    
+## hevtraff                                    -0.02 (0.03)       0.09*** (0.01)      0.14*** (0.01)   
+## medtraff                                   0.11*** (0.04)                                           
+## stndtraff                                    0.03 (0.02)                                            
+## lev1j                                      -0.0001 (0.001)    -0.0002 (0.0005)     0.0002 (0.0004)  
+## lev2j                                      0.0005 (0.001)                                           
+## lev3j                                       0.001 (0.001)      0.001* (0.001)     0.002*** (0.001)  
+## lev4j                                     0.002*** (0.001)    0.002*** (0.001)    0.003*** (0.001)  
+## Ave_delay                                 -0.0000 (0.0001)                                          
+## QtM_Police                                   0.01 (0.08)                                            
+## QtM_School                                 -0.17*** (0.05)     -0.18*** (0.05)     -0.21*** (0.05)  
+## Dist_Alcoh                               -0.0001*** (0.0000) -0.0001*** (0.0000) -0.0001*** (0.0000)
+## ZONING_COD(C2)                             -1.27** (0.56)      -2.68*** (0.57)                      
+## ZONING_COD(C3)                             -3.15*** (0.58)     -4.92*** (0.59)                      
+## ZONING_COD(CM)                             -1.67** (0.72)      -3.71*** (0.72)                      
+## ZONING_COD(M2)                             -3.20*** (0.88)     -4.86*** (0.89)                      
+## ZONING_COD(M3)                             -4.12*** (1.52)     -5.49*** (1.54)                      
+## ZONING_COD(OR1)                             -0.74 (1.26)        -0.65 (1.28)                        
+## ZONING_COD(OR3)                             -0.75 (0.94)        -1.49 (0.94)                        
+## ZONING_COD(OTF)                            -2.57** (1.26)      -4.36*** (1.28)                      
+## ZONING_COD(R1)                              -0.41 (1.27)       -3.00** (1.28)                       
+## ZONING_COD(R4)                             -2.67*** (0.56)     -4.19*** (0.56)                      
+## ZONING_COD(R5)                             -2.28*** (0.67)     -3.88*** (0.67)                      
+## ZONING_COD(R5A)                            -2.33** (0.97)      -3.91*** (0.98)                      
+## ZONING_COD(RR)                             -2.82*** (0.57)     -4.48*** (0.58)                      
+## ZONING_COD(W2)                             -2.84*** (0.68)     -4.42*** (0.69)                      
+## ZONING_COD(W3)                             -3.65*** (1.13)     -4.60*** (1.14)                      
+## ZONING_CODC1                               -1.89*** (0.54)     -3.44*** (0.54)                      
+## ZONING_CODC2                               -1.90*** (0.54)     -3.41*** (0.54)                      
+## ZONING_CODC3                               -1.52** (0.70)      -2.87*** (0.71)                      
+## ZONING_CODCM                               -2.30*** (0.58)     -3.81*** (0.59)                      
+## ZONING_CODCN                               -2.05*** (0.69)     -3.68*** (0.70)                      
+## ZONING_CODCR                               -2.17*** (0.61)     -3.72*** (0.61)                      
+## ZONING_CODEZ1                              -2.30*** (0.54)     -3.80*** (0.54)                      
+## ZONING_CODM1                               -2.33*** (0.62)     -4.09*** (0.63)                      
+## ZONING_CODM2                               -2.45*** (0.55)     -4.03*** (0.55)                      
+## ZONING_CODM3                               -2.56*** (0.56)     -4.08*** (0.57)                      
+## ZONING_CODOR                               -2.46*** (0.82)     -2.68*** (0.83)                      
+## ZONING_CODOR1                              -2.29*** (0.59)     -3.83*** (0.59)                      
+## ZONING_CODOR2                              -2.58*** (0.55)     -4.10*** (0.55)                      
+## ZONING_CODOR3                              -2.41*** (0.55)     -4.18*** (0.55)                      
+## ZONING_CODOTF                              -3.30*** (0.77)     -4.70*** (0.78)                      
+## ZONING_CODPD                               -1.89*** (0.56)     -3.52*** (0.57)                      
+## ZONING_CODPEC                              -2.33*** (0.56)     -3.80*** (0.57)                      
+## ZONING_CODPRD                              -2.34*** (0.56)     -3.90*** (0.57)                      
+## ZONING_CODPVD                              -2.43*** (0.74)     -3.87*** (0.76)                      
+## ZONING_CODR1                               -2.36*** (0.54)     -4.00*** (0.55)                      
+## ZONING_CODR2                               -2.57*** (0.61)     -4.16*** (0.62)                      
+## ZONING_CODR3                               -2.66*** (0.58)     -4.27*** (0.59)                      
+## ZONING_CODR4                               -2.35*** (0.54)     -3.93*** (0.54)                      
+## ZONING_CODR5                               -2.41*** (0.54)     -4.00*** (0.54)                      
+## ZONING_CODR5A                              -2.40*** (0.54)     -3.95*** (0.54)                      
+## ZONING_CODR5B                              -2.23*** (0.57)     -3.94*** (0.58)                      
+## ZONING_CODR6                               -2.43*** (0.54)     -3.99*** (0.54)                      
+## ZONING_CODR7                               -2.41*** (0.54)     -4.00*** (0.54)                      
+## ZONING_CODR8A                              -2.69*** (0.64)     -4.18*** (0.65)                      
+## ZONING_CODRE                               -2.28*** (0.79)     -3.39*** (0.80)                      
+## ZONING_CODROW                              -2.47*** (0.55)     -4.05*** (0.55)                      
+## ZONING_CODRR                               -2.44*** (0.72)     -4.04*** (0.73)                      
+## ZONING_CODTNZD                             -2.72*** (0.56)     -4.14*** (0.56)                      
+## ZONING_CODUN                               -2.33*** (0.54)     -3.85*** (0.55)                      
+## ZONING_CODW3                                -0.81 (2.06)        -2.44 (2.08)                        
+## DISTRICTDOWNTOWN                            -0.10 (0.20)        -0.09 (0.20)                        
+## DISTRICTINTERSTATE RIGHT OF WAY             0.40** (0.16)        0.24 (0.16)                        
+## DISTRICTNEIGHBORHOOD                        0.21** (0.10)       0.19* (0.10)                        
+## DISTRICTNO FORM DISTRICT IN EFFECT           0.22 (0.54)         0.13 (0.56)                        
+## DISTRICTOHIO RIVER                         4.83*** (0.74)       1.85** (0.75)                       
+## DISTRICTREGIONAL CENTER                    1.93*** (0.17)      2.23*** (0.17)                       
+## DISTRICTSUBURBAN MARKETPLACE CORRIDOR      1.03*** (0.13)      1.06*** (0.12)                       
+## DISTRICTSUBURBAN WORKPLACE                   0.11 (0.12)         0.02 (0.12)                        
+## DISTRICTTOWN CENTER                        0.80*** (0.16)      0.82*** (0.17)                       
+## DISTRICTTRADITIONAL MARKETPLACE CORRIDOR    -0.04 (0.14)        -0.02 (0.14)                        
+## DISTRICTTRADITIONAL NEIGHBORHOOD             0.11 (0.10)         0.10 (0.10)                        
+## DISTRICTTRADITIONAL WORKPLACE               -0.04 (0.14)        -0.09 (0.13)                        
+## DISTRICTVILLAGE                              0.16 (0.15)         0.13 (0.15)                        
+## DISTRICTVILLAGE CENTER                       0.03 (0.21)         0.03 (0.21)                        
+## POP_DEN                                   -0.0000 (0.0000)    -0.0000 (0.0000)    -0.0000 (0.0000)  
+## BSNS_DENS                                   0.001 (0.001)      0.0001 (0.001)      0.001* (0.0005)  
+## Emply_D                                      0.01 (0.04)                                            
+## Shop_Dn                                    -0.13** (0.06)       -0.03 (0.06)        0.12** (0.05)   
+## Downt_Dist                                 0.0000 (0.0000)                                          
+## NearArteryALGONQUIN PKWY                    -0.01 (0.19)         0.05 (0.19)                        
+## NearArteryBARDSTOWN RD                     -0.30*** (0.08)     -0.25*** (0.08)                      
+## NearArteryBEULAH CHURCH RD                  -0.17 (0.14)        -0.14 (0.14)                        
+## NearArteryBRECKENRIDGE LN                    0.51 (0.75)         0.07 (0.64)                        
+## NearArteryBROWNSBORO RD                    -1.09** (0.52)       -0.78 (0.58)                        
+## NearArteryBUECHEL BYPASS                    -0.38 (0.23)       -0.51** (0.24)                       
+## NearArteryCLARK MEMORIAL BRG                -0.33 (0.86)        2.23** (0.91)                       
+## NearArteryDIXIE HWY                        -0.40*** (0.08)     -0.33*** (0.08)                      
+## NearArteryE MAIN ST                         -0.19* (0.10)      -0.29*** (0.10)                      
+## NearArteryE MARKET ST                      -0.61*** (0.22)      -0.29 (0.22)                        
+## NearArteryEASTERN PKWY                      0.51** (0.25)      0.68*** (0.26)                       
+## NearArteryFERN VALLEY RD                    -0.08 (0.09)        -0.10 (0.09)                        
+## NearArteryFRANKFORT AVE                     -0.18 (0.11)        -0.20* (0.11)                       
+## NearArteryGENE SNYDER FREEWAY              -0.94*** (0.23)     -1.09*** (0.23)                      
+## NearArteryGREENBELT HWY                    -0.42*** (0.09)     -0.35*** (0.09)                      
+## NearArteryGREENWOOD RD                      -0.08 (0.19)        -0.03 (0.20)                        
+## NearArteryI-264                              0.11 (0.15)       0.99*** (0.15)                       
+## NearArteryI-265                            -0.44** (0.17)      -0.43** (0.18)                       
+## NearArteryI-64                             3.18*** (0.44)      2.86*** (0.42)                       
+## NearArteryI-65                              -0.13 (0.13)        -0.06 (0.13)                        
+## NearArteryINDUSTRY RD                       -0.54 (0.37)        -0.57 (0.39)                        
+## NearArteryJEFFERSON BLVD                    -0.21 (0.38)        -0.23 (0.39)                        
+## NearArteryKY-3080                          0.93*** (0.30)      1.02*** (0.32)                       
+## NearArteryKY-6161                          -0.70** (0.32)       -0.56 (0.35)                        
+## NearArteryKY 841                            -0.21 (0.15)        -0.19 (0.15)                        
+## NearArteryLIME KILN LN                      -0.41* (0.23)       -0.38 (0.23)                        
+## NearArteryMAIN ST                          -4.48** (1.99)      -4.64** (2.01)                       
+## NearArteryMOCKINGBIRD VALLEY RD             -0.04 (0.67)        -0.21 (0.58)                        
+## NearArteryMOSER RD                          -0.35 (0.45)        -0.44 (0.42)                        
+## NearArteryMOUNT HOLLY RD                    -0.19 (0.22)        -0.09 (0.23)                        
+## NearArteryN 22ND ST                        -0.43*** (0.14)     -0.47*** (0.15)                      
+## NearArteryN HURSTBOURNE PKWY               -0.43** (0.17)      -0.36** (0.17)                       
+## NearArteryNATIONAL TPKE                    4.21*** (1.41)       -0.21 (1.16)                        
+## NearArteryNEW CUT RD                        -0.02 (0.10)         0.06 (0.10)                        
+## NearArteryNEW LA GRANGE RD                  -2.82 (1.99)        3.79* (2.01)                        
+## NearArteryNONE                             -0.23*** (0.07)     -0.20*** (0.07)                      
+## NearArteryORMSBY STATION RD                 -0.40 (0.29)        -0.33 (0.30)                        
+## NearArteryOUTER LOOP                        -0.08 (0.10)        -0.07 (0.10)                        
+## NearArteryPOPLAR LEVEL RD                   -0.11 (0.11)         0.01 (0.11)                        
+## NearArteryPRESTON HWY                      -0.35*** (0.09)     -0.27*** (0.09)                      
+## NearArteryROY WILKINS AVE                   -0.38 (0.49)        -0.61 (0.53)                        
+## NearArteryS 22ND ST                        -0.62*** (0.12)     -0.56*** (0.12)                      
+## NearArteryS 2ND ST                         2.45*** (0.44)      3.54*** (0.47)                       
+## NearArteryS 3RD ST                          -0.18 (0.14)        -0.09 (0.14)                        
+## NearArteryS 7TH ST                          -0.26 (0.16)        -0.26* (0.16)                       
+## NearArteryS 9TH ST                         -0.52** (0.23)      -0.52** (0.23)                       
+## NearArteryS 9TH STREET                      -0.47 (0.40)        -0.53 (0.41)                        
+## NearArteryS HURSTBOURNE PKWY                 0.09 (0.20)         0.04 (0.20)                        
+## NearArteryS HURSTBOURNE PKWY                -0.11 (0.14)        -0.15 (0.14)                        
+## NearArteryS PRESTON ST                      -0.96 (0.61)        -1.44* (0.76)                       
+## NearArterySHELBYVILLE RD                   -0.44*** (0.10)     -0.37*** (0.10)                      
+## NearArterySOUTH PARK RD                      0.13 (0.30)         0.20 (0.31)                        
+## NearArterySTITES STATION RD                  0.17 (0.82)         0.25 (0.71)                        
+## NearArterySTONESTREET RD                    -1.43 (1.00)        -1.77 (1.16)                        
+## NearArterySTORY AVE                         -0.16 (0.23)        -0.08 (0.23)                        
+## NearArteryTAYLOR BLVD                       0.36** (0.16)        0.25 (0.16)                        
+## NearArteryTAYLORSVILLE RD                  -0.27*** (0.09)     -0.28*** (0.09)                      
+## NearArteryUS 31W                            -1.09 (1.15)        -1.18 (1.16)                        
+## NearArteryW BROADWAY                        -0.11 (0.10)        -0.08 (0.10)                        
+## NearArteryW CHESTNUT ST                     -0.17 (0.51)        -0.11 (0.55)                        
+## NearArteryW JEFFERSON ST                   -1.49** (0.59)       -0.57 (0.59)                        
+## NearArteryW LIBERTY ST                      -0.56 (0.49)        -0.60 (0.50)                        
+## NearArteryW MARKET ST                                           -3.07 (2.01)                        
+## NearArteryW MUHAMMAD ALI BLVD               -0.003 (0.40)       -0.19 (0.38)                        
+## NearArteryW OAK ST                          -0.82 (1.98)        -1.03 (1.42)                        
+## NearArteryWATERFORD RD                      -0.31 (1.00)         0.22 (1.02)                        
+## NearArteryWHIPPS MILL RD                    -0.53 (0.46)        -0.62 (0.49)                        
+## NearArteryWOODRIDGE DR                      -0.07 (0.14)        -0.04 (0.14)                        
+## Intersect                                  -5.51*** (0.17)     -5.43*** (0.17)     -5.38*** (0.17)  
+## TYPEINACTIVE                               -5.39*** (0.30)     -5.38*** (0.31)     -5.13*** (0.30)  
+## TYPEINTERSECTION                                                                                    
+## TYPEINTERSTATE RAMP                        -4.98*** (0.17)     -5.17*** (0.17)     -5.10*** (0.18)  
+## TYPELOCAL                                  -5.01*** (0.16)     -4.97*** (0.17)     -4.95*** (0.16)  
+## TYPEMAJOR ARTERIAL                         -3.62*** (0.17)     -3.56*** (0.17)     -3.50*** (0.16)  
+## TYPEMINOR ARTERIAL                         -4.56*** (0.16)     -4.51*** (0.17)     -4.56*** (0.16)  
+## TYPEPEDESTRIAN WALKWAY                     -4.96*** (0.29)     -4.92*** (0.28)     -4.93*** (0.28)  
+## TYPEPRIMARY COLLECTOR                      -5.11*** (0.17)     -5.06*** (0.17)     -5.05*** (0.16)  
+## TYPERESPONSE ROUTE                         -5.44*** (0.83)     -5.21*** (1.02)     -5.24*** (1.03)  
+## TYPESECONDARY COLLECTOR                    -5.84*** (0.19)     -5.79*** (0.19)     -5.75*** (0.18)  
+## Rd_CharCURVE                                  HILLCREST          0.07 (0.08)                        
+## Rd_CharCURVE                                    LEVEL            0.06 (0.06)                        
+## Rd_CharSTRAIGHT                                 GRADE           0.13** (0.06)                       
+## Rd_CharSTRAIGHT                               HILLCREST         0.14* (0.08)                        
+## Rd_CharSTRAIGHT                                 LEVEL            0.07 (0.05)                        
+## N_NEIGHBS                                  0.66*** (0.05)      0.60*** (0.05)      0.56*** (0.05)   
+## Var_SPEED                                -0.001*** (0.0004)  -0.001*** (0.0004)   -0.001** (0.0004) 
+## Length                                     5.32*** (0.11)      4.89*** (0.11)      4.76*** (0.11)   
+## has_colls                                  0.30*** (0.06)      0.37*** (0.06)      0.62*** (0.06)   
+## hazobj                                     -0.05*** (0.01)     -0.03** (0.01)      -0.03*** (0.01)  
+## rdkill                                      0.02** (0.01)        0.01 (0.01)       0.02*** (0.01)   
+## Constant                                   4.75*** (0.65)      7.17*** (0.61)      3.25*** (0.24)   
+## ----------------------------------------------------------------------------------------------------
+## Observations                                   36,263              36,263              36,263       
+## R2                                              0.37                0.36                0.34        
+## Adjusted R2                                     0.37                0.36                0.34        
+## ====================================================================================================
+## Note:                                                                    *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+</div>
+<div id="poisson-regression-results" class="section level2">
+<h2>Poisson Regression Results</h2>
+<pre class="r"><code>stargazer(fit_ols, fit_ols2, fit_ols3, title=&quot;OLS Results&quot;, align=TRUE, type = &quot;text&quot;, omit.stat=c(&quot;LL&quot;,&quot;ser&quot;,&quot;f&quot;), ci=FALSE, single.row=TRUE,digits = 2)</code></pre>
+<pre><code>## 
+## OLS Results
+## ====================================================================================================
+##                                                              Dependent variable:                    
+##                                          -----------------------------------------------------------
+##                                                                  Count_2017                         
+##                                                  (1)                 (2)                 (3)        
+## ----------------------------------------------------------------------------------------------------
+## TrafficSig                                 4.62*** (0.10)      4.54*** (0.10)      4.59*** (0.10)   
+## ONEWAY                                     -0.83*** (0.06)     -0.54*** (0.06)     -0.64*** (0.06)  
+## BIKEWAY                                    -0.33*** (0.07)     -0.25*** (0.07)     -0.37*** (0.07)  
+## rankC                                      -0.21*** (0.05)     -0.15*** (0.05)     -0.11** (0.05)   
+## rankE                                      -0.11** (0.05)       -0.06 (0.05)        -0.01 (0.05)    
+## avg_width                                 0.004*** (0.001)    0.004*** (0.001)    0.005*** (0.001)  
+## No_Left                                    0.62*** (0.23)                                           
+## Stop_Sign                                   -0.03 (0.04)                                            
+## Slow_Sign                                   -0.16 (0.16)                                            
+## SpdLim_Sig                                 -0.21*** (0.03)     -0.18*** (0.03)     -0.19*** (0.03)  
+## Yield_Sign                                  -0.06 (0.12)                                            
+## Discnt_Lne                                  0.41* (0.22)        0.45** (0.21)      0.59*** (0.22)   
+## BUS_RT                                     0.59*** (0.04)      0.56*** (0.04)      0.58*** (0.04)   
+## Light_Dens                                 0.003** (0.001)                                          
+## Frght_R                                    0.55*** (0.06)      0.58*** (0.06)      0.56*** (0.06)   
+## potholes                                   -0.10*** (0.02)     -0.08*** (0.01)     -0.13*** (0.01)  
+## missign                                    0.004* (0.002)       0.001 (0.002)      0.004** (0.002)  
+## SPEED                                      0.03*** (0.003)     0.02*** (0.003)     0.03*** (0.003)  
+## ParkingCit                                 0.02*** (0.002)     0.02*** (0.003)     0.01*** (0.003)  
+## Cite_Dens                                  0.02*** (0.003)     0.02*** (0.003)     0.01*** (0.002)  
+## volume                                    -0.002** (0.001)     -0.002* (0.001)    -0.004*** (0.001) 
+## congestion                                  -0.02 (0.01)        -0.02 (0.01)        -0.02 (0.01)    
+## hevtraff                                    -0.02 (0.03)       0.09*** (0.01)      0.14*** (0.01)   
+## medtraff                                   0.11*** (0.04)                                           
+## stndtraff                                    0.03 (0.02)                                            
+## lev1j                                      -0.0001 (0.001)    -0.0002 (0.0005)     0.0002 (0.0004)  
+## lev2j                                      0.0005 (0.001)                                           
+## lev3j                                       0.001 (0.001)      0.001* (0.001)     0.002*** (0.001)  
+## lev4j                                     0.002*** (0.001)    0.002*** (0.001)    0.003*** (0.001)  
+## Ave_delay                                 -0.0000 (0.0001)                                          
+## QtM_Police                                   0.01 (0.08)                                            
+## QtM_School                                 -0.17*** (0.05)     -0.18*** (0.05)     -0.21*** (0.05)  
+## Dist_Alcoh                               -0.0001*** (0.0000) -0.0001*** (0.0000) -0.0001*** (0.0000)
+## ZONING_COD(C2)                             -1.27** (0.56)      -2.68*** (0.57)                      
+## ZONING_COD(C3)                             -3.15*** (0.58)     -4.92*** (0.59)                      
+## ZONING_COD(CM)                             -1.67** (0.72)      -3.71*** (0.72)                      
+## ZONING_COD(M2)                             -3.20*** (0.88)     -4.86*** (0.89)                      
+## ZONING_COD(M3)                             -4.12*** (1.52)     -5.49*** (1.54)                      
+## ZONING_COD(OR1)                             -0.74 (1.26)        -0.65 (1.28)                        
+## ZONING_COD(OR3)                             -0.75 (0.94)        -1.49 (0.94)                        
+## ZONING_COD(OTF)                            -2.57** (1.26)      -4.36*** (1.28)                      
+## ZONING_COD(R1)                              -0.41 (1.27)       -3.00** (1.28)                       
+## ZONING_COD(R4)                             -2.67*** (0.56)     -4.19*** (0.56)                      
+## ZONING_COD(R5)                             -2.28*** (0.67)     -3.88*** (0.67)                      
+## ZONING_COD(R5A)                            -2.33** (0.97)      -3.91*** (0.98)                      
+## ZONING_COD(RR)                             -2.82*** (0.57)     -4.48*** (0.58)                      
+## ZONING_COD(W2)                             -2.84*** (0.68)     -4.42*** (0.69)                      
+## ZONING_COD(W3)                             -3.65*** (1.13)     -4.60*** (1.14)                      
+## ZONING_CODC1                               -1.89*** (0.54)     -3.44*** (0.54)                      
+## ZONING_CODC2                               -1.90*** (0.54)     -3.41*** (0.54)                      
+## ZONING_CODC3                               -1.52** (0.70)      -2.87*** (0.71)                      
+## ZONING_CODCM                               -2.30*** (0.58)     -3.81*** (0.59)                      
+## ZONING_CODCN                               -2.05*** (0.69)     -3.68*** (0.70)                      
+## ZONING_CODCR                               -2.17*** (0.61)     -3.72*** (0.61)                      
+## ZONING_CODEZ1                              -2.30*** (0.54)     -3.80*** (0.54)                      
+## ZONING_CODM1                               -2.33*** (0.62)     -4.09*** (0.63)                      
+## ZONING_CODM2                               -2.45*** (0.55)     -4.03*** (0.55)                      
+## ZONING_CODM3                               -2.56*** (0.56)     -4.08*** (0.57)                      
+## ZONING_CODOR                               -2.46*** (0.82)     -2.68*** (0.83)                      
+## ZONING_CODOR1                              -2.29*** (0.59)     -3.83*** (0.59)                      
+## ZONING_CODOR2                              -2.58*** (0.55)     -4.10*** (0.55)                      
+## ZONING_CODOR3                              -2.41*** (0.55)     -4.18*** (0.55)                      
+## ZONING_CODOTF                              -3.30*** (0.77)     -4.70*** (0.78)                      
+## ZONING_CODPD                               -1.89*** (0.56)     -3.52*** (0.57)                      
+## ZONING_CODPEC                              -2.33*** (0.56)     -3.80*** (0.57)                      
+## ZONING_CODPRD                              -2.34*** (0.56)     -3.90*** (0.57)                      
+## ZONING_CODPVD                              -2.43*** (0.74)     -3.87*** (0.76)                      
+## ZONING_CODR1                               -2.36*** (0.54)     -4.00*** (0.55)                      
+## ZONING_CODR2                               -2.57*** (0.61)     -4.16*** (0.62)                      
+## ZONING_CODR3                               -2.66*** (0.58)     -4.27*** (0.59)                      
+## ZONING_CODR4                               -2.35*** (0.54)     -3.93*** (0.54)                      
+## ZONING_CODR5                               -2.41*** (0.54)     -4.00*** (0.54)                      
+## ZONING_CODR5A                              -2.40*** (0.54)     -3.95*** (0.54)                      
+## ZONING_CODR5B                              -2.23*** (0.57)     -3.94*** (0.58)                      
+## ZONING_CODR6                               -2.43*** (0.54)     -3.99*** (0.54)                      
+## ZONING_CODR7                               -2.41*** (0.54)     -4.00*** (0.54)                      
+## ZONING_CODR8A                              -2.69*** (0.64)     -4.18*** (0.65)                      
+## ZONING_CODRE                               -2.28*** (0.79)     -3.39*** (0.80)                      
+## ZONING_CODROW                              -2.47*** (0.55)     -4.05*** (0.55)                      
+## ZONING_CODRR                               -2.44*** (0.72)     -4.04*** (0.73)                      
+## ZONING_CODTNZD                             -2.72*** (0.56)     -4.14*** (0.56)                      
+## ZONING_CODUN                               -2.33*** (0.54)     -3.85*** (0.55)                      
+## ZONING_CODW3                                -0.81 (2.06)        -2.44 (2.08)                        
+## DISTRICTDOWNTOWN                            -0.10 (0.20)        -0.09 (0.20)                        
+## DISTRICTINTERSTATE RIGHT OF WAY             0.40** (0.16)        0.24 (0.16)                        
+## DISTRICTNEIGHBORHOOD                        0.21** (0.10)       0.19* (0.10)                        
+## DISTRICTNO FORM DISTRICT IN EFFECT           0.22 (0.54)         0.13 (0.56)                        
+## DISTRICTOHIO RIVER                         4.83*** (0.74)       1.85** (0.75)                       
+## DISTRICTREGIONAL CENTER                    1.93*** (0.17)      2.23*** (0.17)                       
+## DISTRICTSUBURBAN MARKETPLACE CORRIDOR      1.03*** (0.13)      1.06*** (0.12)                       
+## DISTRICTSUBURBAN WORKPLACE                   0.11 (0.12)         0.02 (0.12)                        
+## DISTRICTTOWN CENTER                        0.80*** (0.16)      0.82*** (0.17)                       
+## DISTRICTTRADITIONAL MARKETPLACE CORRIDOR    -0.04 (0.14)        -0.02 (0.14)                        
+## DISTRICTTRADITIONAL NEIGHBORHOOD             0.11 (0.10)         0.10 (0.10)                        
+## DISTRICTTRADITIONAL WORKPLACE               -0.04 (0.14)        -0.09 (0.13)                        
+## DISTRICTVILLAGE                              0.16 (0.15)         0.13 (0.15)                        
+## DISTRICTVILLAGE CENTER                       0.03 (0.21)         0.03 (0.21)                        
+## POP_DEN                                   -0.0000 (0.0000)    -0.0000 (0.0000)    -0.0000 (0.0000)  
+## BSNS_DENS                                   0.001 (0.001)      0.0001 (0.001)      0.001* (0.0005)  
+## Emply_D                                      0.01 (0.04)                                            
+## Shop_Dn                                    -0.13** (0.06)       -0.03 (0.06)        0.12** (0.05)   
+## Downt_Dist                                 0.0000 (0.0000)                                          
+## NearArteryALGONQUIN PKWY                    -0.01 (0.19)         0.05 (0.19)                        
+## NearArteryBARDSTOWN RD                     -0.30*** (0.08)     -0.25*** (0.08)                      
+## NearArteryBEULAH CHURCH RD                  -0.17 (0.14)        -0.14 (0.14)                        
+## NearArteryBRECKENRIDGE LN                    0.51 (0.75)         0.07 (0.64)                        
+## NearArteryBROWNSBORO RD                    -1.09** (0.52)       -0.78 (0.58)                        
+## NearArteryBUECHEL BYPASS                    -0.38 (0.23)       -0.51** (0.24)                       
+## NearArteryCLARK MEMORIAL BRG                -0.33 (0.86)        2.23** (0.91)                       
+## NearArteryDIXIE HWY                        -0.40*** (0.08)     -0.33*** (0.08)                      
+## NearArteryE MAIN ST                         -0.19* (0.10)      -0.29*** (0.10)                      
+## NearArteryE MARKET ST                      -0.61*** (0.22)      -0.29 (0.22)                        
+## NearArteryEASTERN PKWY                      0.51** (0.25)      0.68*** (0.26)                       
+## NearArteryFERN VALLEY RD                    -0.08 (0.09)        -0.10 (0.09)                        
+## NearArteryFRANKFORT AVE                     -0.18 (0.11)        -0.20* (0.11)                       
+## NearArteryGENE SNYDER FREEWAY              -0.94*** (0.23)     -1.09*** (0.23)                      
+## NearArteryGREENBELT HWY                    -0.42*** (0.09)     -0.35*** (0.09)                      
+## NearArteryGREENWOOD RD                      -0.08 (0.19)        -0.03 (0.20)                        
+## NearArteryI-264                              0.11 (0.15)       0.99*** (0.15)                       
+## NearArteryI-265                            -0.44** (0.17)      -0.43** (0.18)                       
+## NearArteryI-64                             3.18*** (0.44)      2.86*** (0.42)                       
+## NearArteryI-65                              -0.13 (0.13)        -0.06 (0.13)                        
+## NearArteryINDUSTRY RD                       -0.54 (0.37)        -0.57 (0.39)                        
+## NearArteryJEFFERSON BLVD                    -0.21 (0.38)        -0.23 (0.39)                        
+## NearArteryKY-3080                          0.93*** (0.30)      1.02*** (0.32)                       
+## NearArteryKY-6161                          -0.70** (0.32)       -0.56 (0.35)                        
+## NearArteryKY 841                            -0.21 (0.15)        -0.19 (0.15)                        
+## NearArteryLIME KILN LN                      -0.41* (0.23)       -0.38 (0.23)                        
+## NearArteryMAIN ST                          -4.48** (1.99)      -4.64** (2.01)                       
+## NearArteryMOCKINGBIRD VALLEY RD             -0.04 (0.67)        -0.21 (0.58)                        
+## NearArteryMOSER RD                          -0.35 (0.45)        -0.44 (0.42)                        
+## NearArteryMOUNT HOLLY RD                    -0.19 (0.22)        -0.09 (0.23)                        
+## NearArteryN 22ND ST                        -0.43*** (0.14)     -0.47*** (0.15)                      
+## NearArteryN HURSTBOURNE PKWY               -0.43** (0.17)      -0.36** (0.17)                       
+## NearArteryNATIONAL TPKE                    4.21*** (1.41)       -0.21 (1.16)                        
+## NearArteryNEW CUT RD                        -0.02 (0.10)         0.06 (0.10)                        
+## NearArteryNEW LA GRANGE RD                  -2.82 (1.99)        3.79* (2.01)                        
+## NearArteryNONE                             -0.23*** (0.07)     -0.20*** (0.07)                      
+## NearArteryORMSBY STATION RD                 -0.40 (0.29)        -0.33 (0.30)                        
+## NearArteryOUTER LOOP                        -0.08 (0.10)        -0.07 (0.10)                        
+## NearArteryPOPLAR LEVEL RD                   -0.11 (0.11)         0.01 (0.11)                        
+## NearArteryPRESTON HWY                      -0.35*** (0.09)     -0.27*** (0.09)                      
+## NearArteryROY WILKINS AVE                   -0.38 (0.49)        -0.61 (0.53)                        
+## NearArteryS 22ND ST                        -0.62*** (0.12)     -0.56*** (0.12)                      
+## NearArteryS 2ND ST                         2.45*** (0.44)      3.54*** (0.47)                       
+## NearArteryS 3RD ST                          -0.18 (0.14)        -0.09 (0.14)                        
+## NearArteryS 7TH ST                          -0.26 (0.16)        -0.26* (0.16)                       
+## NearArteryS 9TH ST                         -0.52** (0.23)      -0.52** (0.23)                       
+## NearArteryS 9TH STREET                      -0.47 (0.40)        -0.53 (0.41)                        
+## NearArteryS HURSTBOURNE PKWY                 0.09 (0.20)         0.04 (0.20)                        
+## NearArteryS HURSTBOURNE PKWY                -0.11 (0.14)        -0.15 (0.14)                        
+## NearArteryS PRESTON ST                      -0.96 (0.61)        -1.44* (0.76)                       
+## NearArterySHELBYVILLE RD                   -0.44*** (0.10)     -0.37*** (0.10)                      
+## NearArterySOUTH PARK RD                      0.13 (0.30)         0.20 (0.31)                        
+## NearArterySTITES STATION RD                  0.17 (0.82)         0.25 (0.71)                        
+## NearArterySTONESTREET RD                    -1.43 (1.00)        -1.77 (1.16)                        
+## NearArterySTORY AVE                         -0.16 (0.23)        -0.08 (0.23)                        
+## NearArteryTAYLOR BLVD                       0.36** (0.16)        0.25 (0.16)                        
+## NearArteryTAYLORSVILLE RD                  -0.27*** (0.09)     -0.28*** (0.09)                      
+## NearArteryUS 31W                            -1.09 (1.15)        -1.18 (1.16)                        
+## NearArteryW BROADWAY                        -0.11 (0.10)        -0.08 (0.10)                        
+## NearArteryW CHESTNUT ST                     -0.17 (0.51)        -0.11 (0.55)                        
+## NearArteryW JEFFERSON ST                   -1.49** (0.59)       -0.57 (0.59)                        
+## NearArteryW LIBERTY ST                      -0.56 (0.49)        -0.60 (0.50)                        
+## NearArteryW MARKET ST                                           -3.07 (2.01)                        
+## NearArteryW MUHAMMAD ALI BLVD               -0.003 (0.40)       -0.19 (0.38)                        
+## NearArteryW OAK ST                          -0.82 (1.98)        -1.03 (1.42)                        
+## NearArteryWATERFORD RD                      -0.31 (1.00)         0.22 (1.02)                        
+## NearArteryWHIPPS MILL RD                    -0.53 (0.46)        -0.62 (0.49)                        
+## NearArteryWOODRIDGE DR                      -0.07 (0.14)        -0.04 (0.14)                        
+## Intersect                                  -5.51*** (0.17)     -5.43*** (0.17)     -5.38*** (0.17)  
+## TYPEINACTIVE                               -5.39*** (0.30)     -5.38*** (0.31)     -5.13*** (0.30)  
+## TYPEINTERSECTION                                                                                    
+## TYPEINTERSTATE RAMP                        -4.98*** (0.17)     -5.17*** (0.17)     -5.10*** (0.18)  
+## TYPELOCAL                                  -5.01*** (0.16)     -4.97*** (0.17)     -4.95*** (0.16)  
+## TYPEMAJOR ARTERIAL                         -3.62*** (0.17)     -3.56*** (0.17)     -3.50*** (0.16)  
+## TYPEMINOR ARTERIAL                         -4.56*** (0.16)     -4.51*** (0.17)     -4.56*** (0.16)  
+## TYPEPEDESTRIAN WALKWAY                     -4.96*** (0.29)     -4.92*** (0.28)     -4.93*** (0.28)  
+## TYPEPRIMARY COLLECTOR                      -5.11*** (0.17)     -5.06*** (0.17)     -5.05*** (0.16)  
+## TYPERESPONSE ROUTE                         -5.44*** (0.83)     -5.21*** (1.02)     -5.24*** (1.03)  
+## TYPESECONDARY COLLECTOR                    -5.84*** (0.19)     -5.79*** (0.19)     -5.75*** (0.18)  
+## Rd_CharCURVE                                  HILLCREST          0.07 (0.08)                        
+## Rd_CharCURVE                                    LEVEL            0.06 (0.06)                        
+## Rd_CharSTRAIGHT                                 GRADE           0.13** (0.06)                       
+## Rd_CharSTRAIGHT                               HILLCREST         0.14* (0.08)                        
+## Rd_CharSTRAIGHT                                 LEVEL            0.07 (0.05)                        
+## N_NEIGHBS                                  0.66*** (0.05)      0.60*** (0.05)      0.56*** (0.05)   
+## Var_SPEED                                -0.001*** (0.0004)  -0.001*** (0.0004)   -0.001** (0.0004) 
+## Length                                     5.32*** (0.11)      4.89*** (0.11)      4.76*** (0.11)   
+## has_colls                                  0.30*** (0.06)      0.37*** (0.06)      0.62*** (0.06)   
+## hazobj                                     -0.05*** (0.01)     -0.03** (0.01)      -0.03*** (0.01)  
+## rdkill                                      0.02** (0.01)        0.01 (0.01)       0.02*** (0.01)   
+## Constant                                   4.75*** (0.65)      7.17*** (0.61)      3.25*** (0.24)   
+## ----------------------------------------------------------------------------------------------------
+## Observations                                   36,263              36,263              36,263       
+## R2                                              0.37                0.36                0.34        
+## Adjusted R2                                     0.37                0.36                0.34        
+## ====================================================================================================
+## Note:                                                                    *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
